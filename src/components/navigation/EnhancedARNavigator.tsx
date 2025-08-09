@@ -98,22 +98,27 @@ const EnhancedARNavigator: React.FC<{ autoStart?: boolean; fullscreen?: boolean 
       // Stop existing stream first
       cleanupStream();
 
+      console.log('Requesting camera access with facingMode:', preferredFacingMode);
+
       const constraints: MediaStreamConstraints = {
         video: {
           facingMode: { ideal: preferredFacingMode },
-          width: { ideal: 1280 },
-          height: { ideal: 720 }
+          width: { ideal: 1280, min: 640 },
+          height: { ideal: 720, min: 480 }
         },
         audio: false
       };
 
+      console.log('Camera constraints:', constraints);
       let stream = await navigator.mediaDevices.getUserMedia(constraints);
       
       // Fallback if preferred camera not available
       if (!stream || stream.getVideoTracks().length === 0) {
+        console.log('Fallback: trying basic camera access');
         stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: false });
       }
 
+      console.log('Camera stream obtained:', stream);
       streamRef.current = stream;
       const video = videoRef.current;
       
@@ -123,8 +128,21 @@ const EnhancedARNavigator: React.FC<{ autoStart?: boolean; fullscreen?: boolean 
         video.autoplay = true;
         video.srcObject = stream;
         
+        console.log('Setting up video element...');
+        
+        // Wait for video to load metadata
+        await new Promise((resolve, reject) => {
+          video.onloadedmetadata = () => {
+            console.log('Video metadata loaded');
+            resolve(void 0);
+          };
+          video.onerror = reject;
+          setTimeout(reject, 5000); // Timeout after 5 seconds
+        });
+        
         try {
           await video.play();
+          console.log('Video playing successfully');
           setActive(true);
           setFacingMode(preferredFacingMode);
           
@@ -139,7 +157,8 @@ const EnhancedARNavigator: React.FC<{ autoStart?: boolean; fullscreen?: boolean 
         } catch (err) {
           console.warn('Video play blocked:', err);
           setActive(false); // Ensure active is false if video fails
-          toast({ title: 'Camera blocked', description: 'Please tap the camera button to enable video.', variant: 'destructive' });
+          // Show manual start interface
+          toast({ title: 'Tap to enable camera', description: 'Browser blocked autoplay. Please tap the camera button.', variant: 'default' });
         }
       }
     } catch (error: any) {
@@ -230,13 +249,16 @@ const EnhancedARNavigator: React.FC<{ autoStart?: boolean; fullscreen?: boolean 
     if (autoStart && !active && !loading && !error) {
       // Add a small delay to ensure component is mounted
       timeoutId = setTimeout(async () => {
+        console.log('Auto-starting camera...');
         try {
           await startCamera(facingMode);
+          console.log('Camera auto-start successful');
         } catch (err) {
           console.error('Auto-start camera failed:', err);
-          // Don't show error immediately, let user manually start
+          // Still show the start button for manual activation
+          setError(null); // Clear error to show start button
         }
-      }, 500); // Increased delay for better reliability
+      }, 1000); // Increased delay for better reliability
     }
     
     return () => {
