@@ -2,18 +2,16 @@ import { useEffect, useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { HeartPulse, CheckCircle, Trophy, Clock, Calendar, Footprints, Droplets, Pill } from "lucide-react";
+import { HeartPulse, CheckCircle, Trophy, Clock, Calendar } from "lucide-react";
 import AIRecoveryRecommendations from "@/components/recovery/AIRecoveryRecommendations";
 
-interface Task { id: string; title: string; done: boolean; type: 'medication' | 'exercise' | 'wellness' | 'hydration'; }
+interface Task { id: string; title: string; done: boolean; type: 'medication' | 'exercise' | 'wellness'; }
 
 const initialTasks: Task[] = [
-  { id: 't1', title: 'Walk for 10 minutes', done: true, type: 'exercise' },
-  { id: 't2', title: 'Drink a glass of water', done: true, type: 'hydration' },
-  { id: 't3', title: 'Take medication A', done: true, type: 'medication' },
-  { id: 't4', title: 'Attend virtual check-in session', done: false, type: 'wellness' },
-  { id: 't5', title: 'Document symptoms and progress in health diary', done: false, type: 'wellness' },
-  { id: 't6', title: 'Complete prescribed physical therapy exercises', done: false, type: 'exercise' },
+  { id: 't1', title: 'Complete prescribed physical therapy exercises (15 minutes)', done: false, type: 'exercise' },
+  { id: 't2', title: 'Take morning medications as prescribed', done: false, type: 'medication' },
+  { id: 't3', title: 'Attend virtual check-in session', done: false, type: 'wellness' },
+  { id: 't4', title: 'Document symptoms and progress in health diary', done: false, type: 'wellness' },
 ];
 
 const Recovery = () => {
@@ -43,36 +41,10 @@ const Recovery = () => {
 
   const getTaskIcon = (type: string) => {
     switch (type) {
-      case 'medication': 
-        return (
-          <div className="p-1 rounded-full bg-blue-100">
-            <Pill className="h-5 w-5 text-blue-600" />
-          </div>
-        );
-      case 'exercise': 
-        return (
-          <div className="p-1 rounded-full bg-green-100">
-            <Footprints className="h-5 w-5 text-green-600 animate-pulse" />
-          </div>
-        );
-      case 'hydration': 
-        return (
-          <div className="p-1 rounded-full bg-blue-100">
-            <Droplets className="h-5 w-5 text-blue-500" />
-          </div>
-        );
-      case 'wellness': 
-        return (
-          <div className="p-1 rounded-full bg-purple-100">
-            <HeartPulse className="h-5 w-5 text-purple-600" />
-          </div>
-        );
-      default: 
-        return (
-          <div className="p-1 rounded-full bg-gray-100">
-            <CheckCircle className="h-5 w-5 text-gray-600" />
-          </div>
-        );
+      case 'medication': return '💊';
+      case 'exercise': return '🏃‍♂️';
+      case 'wellness': return '💭';
+      default: return '✅';
     }
   };
 
@@ -179,16 +151,14 @@ const Recovery = () => {
             <div key={t.id} className={`flex flex-col sm:flex-row sm:items-center sm:justify-between border rounded-lg p-3 sm:p-4 transition-all gap-3 sm:gap-4 ${
               t.done ? 'bg-muted/30 border-green-200' : 'bg-background border-border hover:border-primary/50'
             }`}>
-              <div className="flex items-center gap-3 flex-1 min-w-0">
-                <div className="flex-shrink-0">
-                  {getTaskIcon(t.type)}
-                </div>
+              <div className="flex items-start gap-2 sm:gap-3 flex-1 min-w-0">
+                <div className="text-lg sm:text-xl flex-shrink-0">{getTaskIcon(t.type)}</div>
                 <div className="flex-1 min-w-0">
                   <span className={`font-medium text-sm sm:text-base block ${t.done ? 'line-through text-muted-foreground' : 'text-foreground'}`}>
                     {t.title}
                   </span>
                   <div className="text-xs text-muted-foreground mt-1 capitalize">
-                    {t.type === 'hydration' ? 'hydration' : t.type} • Required daily activity
+                    {t.type} • Required daily activity
                   </div>
                 </div>
               </div>
