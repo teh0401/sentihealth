@@ -123,7 +123,7 @@ const Index = () => {
                 </div>
                 <div className="space-y-2">
                   <h3 className="text-lg sm:text-xl font-bold text-gray-800 leading-tight">
-                    {getText("Pesakit Baharu", "🆕 New Patient")}
+                    {getText("Pesakit Baharu", "New Patient")}
                   </h3>
                   <p className="text-sm sm:text-base text-gray-600 leading-relaxed">
                     {getText(
@@ -145,7 +145,7 @@ const Index = () => {
                 </div>
                 <div className="space-y-2">
                   <h3 className="text-lg sm:text-xl font-bold text-gray-800 leading-tight">
-                    {getText("Semak Temujanji", "📅 Check Appointment")}
+                    {getText("Semak Temujanji", "Check Appointment")}
                   </h3>
                   <p className="text-sm sm:text-base text-gray-600 leading-relaxed">
                     {getText(
@@ -167,7 +167,7 @@ const Index = () => {
                 </div>
                 <div className="space-y-2">
                   <h3 className="text-lg sm:text-xl font-bold text-gray-800 leading-tight">
-                    {getText("ℹPanduan & Maklumat", "ℹ️ Guides & Info")}
+                    {getText("Panduan & Maklumat", "Guides & Info")}
                   </h3>
                   <p className="text-sm sm:text-base text-gray-600 leading-relaxed">
                     {getText(
