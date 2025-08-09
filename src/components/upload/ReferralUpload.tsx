@@ -61,17 +61,8 @@ const ReferralUpload: React.FC<ReferralUploadProps> = ({
       const { data: { user } } = await supabase.auth.getUser();
       if (user) return { id: user.id };
 
-      // Try to sign in with a temporary email account
-      const tempEmail = `temp_${Math.random().toString(36).slice(2)}@example.com`;
-      const tempPassword = Math.random().toString(36).slice(2);
-      
-      const { data, error } = await supabase.auth.signUp({
-        email: tempEmail,
-        password: tempPassword,
-        options: {
-          emailRedirectTo: window.location.origin
-        }
-      });
+      // Try anonymous sign-in for unauthenticated users
+      const { data, error } = await supabase.auth.signInAnonymously();
 
       if (error) {
         console.error('Auth error:', error);
