@@ -51,7 +51,7 @@ const Recovery = () => {
   const totalTasks = tasks.length;
 
   return (
-    <main className="max-w-screen-lg mx-auto px-4 py-4 sm:py-8 space-y-6 sm:space-y-8 pb-24">
+    <main className="max-w-screen-lg mx-auto px-4 py-4 sm:py-8 space-y-6 sm:space-y-8 pb-28 sm:pb-24">
       {/* Page Header */}
       <section className="border-b pb-4 sm:pb-6">
         <div className="space-y-3 sm:space-y-4">

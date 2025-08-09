@@ -13,7 +13,7 @@ const Navigate = () => {
   return (
     <div className="min-h-screen bg-background">
       {showTest ? (
-        <div className="p-3 sm:p-4 space-y-3 sm:space-y-4 pb-24">
+        <div className="p-3 sm:p-4 space-y-3 sm:space-y-4 pb-28 sm:pb-24">
           {/* Header */}
           <div className="bg-card border rounded-lg p-3 sm:p-4">
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">

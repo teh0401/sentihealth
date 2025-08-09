@@ -4,15 +4,15 @@ import { cn } from "@/lib/utils";
 import SignInMyDigitalID from "@/components/auth/SignInMyDigitalID";
 
 const itemBase =
-  "flex flex-col items-center gap-1 py-2 text-xs text-muted-foreground transition-all duration-200 hover:text-primary";
+  "flex flex-col items-center gap-0.5 sm:gap-1 py-1.5 sm:py-2 text-xs text-muted-foreground transition-all duration-200 hover:text-primary min-h-[3rem] justify-center";
 
 const FooterNav = () => {
   return (
     <nav
       aria-label="Primary footer navigation"
-      className="fixed inset-x-0 bottom-0 z-30 bg-background border-t border-border shadow-formal"
+      className="fixed inset-x-0 bottom-0 z-30 bg-background border-t border-border shadow-formal pb-safe"
     >
-      <ul className="max-w-screen-sm mx-auto grid grid-cols-4 md:grid-cols-3 px-4 py-2 gap-1">
+      <ul className="max-w-screen-sm mx-auto grid grid-cols-4 md:grid-cols-3 px-2 sm:px-4 py-3 gap-1">
         <li>
           <NavLink
             to="/appointments"
