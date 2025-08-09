@@ -44,15 +44,35 @@ const Recovery = () => {
   const getTaskIcon = (type: string) => {
     switch (type) {
       case 'medication': 
-        return <Pill className="h-5 w-5 text-blue-600 hover:scale-110 transition-transform" />;
+        return (
+          <div className="p-1 rounded-full bg-blue-100">
+            <Pill className="h-5 w-5 text-blue-600" />
+          </div>
+        );
       case 'exercise': 
-        return <Footprints className="h-5 w-5 text-green-600 animate-pulse hover:animate-bounce" />;
+        return (
+          <div className="p-1 rounded-full bg-green-100">
+            <Footprints className="h-5 w-5 text-green-600 animate-pulse" />
+          </div>
+        );
       case 'hydration': 
-        return <Droplets className="h-5 w-5 text-blue-400 hover:scale-110 transition-transform" />;
+        return (
+          <div className="p-1 rounded-full bg-blue-100">
+            <Droplets className="h-5 w-5 text-blue-500" />
+          </div>
+        );
       case 'wellness': 
-        return <HeartPulse className="h-5 w-5 text-purple-600 animate-pulse" />;
+        return (
+          <div className="p-1 rounded-full bg-purple-100">
+            <HeartPulse className="h-5 w-5 text-purple-600" />
+          </div>
+        );
       default: 
-        return <CheckCircle className="h-5 w-5 text-gray-600" />;
+        return (
+          <div className="p-1 rounded-full bg-gray-100">
+            <CheckCircle className="h-5 w-5 text-gray-600" />
+          </div>
+        );
     }
   };
 
@@ -159,14 +179,16 @@ const Recovery = () => {
             <div key={t.id} className={`flex flex-col sm:flex-row sm:items-center sm:justify-between border rounded-lg p-3 sm:p-4 transition-all gap-3 sm:gap-4 ${
               t.done ? 'bg-muted/30 border-green-200' : 'bg-background border-border hover:border-primary/50'
             }`}>
-              <div className="flex items-start gap-2 sm:gap-3 flex-1 min-w-0">
-                <div className="flex-shrink-0 p-1">{getTaskIcon(t.type)}</div>
+              <div className="flex items-center gap-3 flex-1 min-w-0">
+                <div className="flex-shrink-0">
+                  {getTaskIcon(t.type)}
+                </div>
                 <div className="flex-1 min-w-0">
                   <span className={`font-medium text-sm sm:text-base block ${t.done ? 'line-through text-muted-foreground' : 'text-foreground'}`}>
                     {t.title}
                   </span>
                   <div className="text-xs text-muted-foreground mt-1 capitalize">
-                    {t.type} • Required daily activity
+                    {t.type === 'hydration' ? 'hydration' : t.type} • Required daily activity
                   </div>
                 </div>
               </div>
