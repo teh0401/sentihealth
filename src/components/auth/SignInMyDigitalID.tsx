@@ -318,13 +318,14 @@ const SignInMyDigitalID = ({ iconOnly = false }: SignInMyDigitalIDProps) => {
                 <div className="text-sm text-gray-500">
                   Demo: Use any IC number (8+ digits)
                 </div>
-                <Link 
-                  to="/signin" 
-                  className="inline-flex items-center gap-1 text-sm text-blue-600 hover:text-blue-700 hover:underline"
-                >
-                  Full Sign-In Experience
-                  <ExternalLink className="h-3 w-3" />
-                </Link>
+              <Link 
+                to="/signin" 
+                className="inline-flex items-center gap-1 text-sm text-blue-600 hover:text-blue-700 hover:underline"
+                onClick={() => setShowDialog(false)}
+              >
+                Full Sign-In Experience
+                <ExternalLink className="h-3 w-3" />
+              </Link>
               </div>
             </div>
           )}
@@ -433,6 +434,7 @@ const SignInMyDigitalID = ({ iconOnly = false }: SignInMyDigitalIDProps) => {
               <Link 
                 to="/signin" 
                 className="inline-flex items-center gap-1 text-sm text-blue-600 hover:text-blue-700 hover:underline"
+                onClick={() => setShowDialog(false)}
               >
                 Full Sign-In Experience
                 <ExternalLink className="h-3 w-3" />
