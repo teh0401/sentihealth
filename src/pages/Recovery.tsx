@@ -2,16 +2,18 @@ import { useEffect, useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { HeartPulse, CheckCircle, Trophy, Clock, Calendar } from "lucide-react";
+import { HeartPulse, CheckCircle, Trophy, Clock, Calendar, Footprints, Droplets, Pill } from "lucide-react";
 import AIRecoveryRecommendations from "@/components/recovery/AIRecoveryRecommendations";
 
-interface Task { id: string; title: string; done: boolean; type: 'medication' | 'exercise' | 'wellness'; }
+interface Task { id: string; title: string; done: boolean; type: 'medication' | 'exercise' | 'wellness' | 'hydration'; }
 
 const initialTasks: Task[] = [
-  { id: 't1', title: 'Complete prescribed physical therapy exercises (15 minutes)', done: false, type: 'exercise' },
-  { id: 't2', title: 'Take morning medications as prescribed', done: false, type: 'medication' },
-  { id: 't3', title: 'Attend virtual check-in session', done: false, type: 'wellness' },
-  { id: 't4', title: 'Document symptoms and progress in health diary', done: false, type: 'wellness' },
+  { id: 't1', title: 'Walk for 10 minutes', done: true, type: 'exercise' },
+  { id: 't2', title: 'Drink a glass of water', done: true, type: 'hydration' },
+  { id: 't3', title: 'Take medication A', done: true, type: 'medication' },
+  { id: 't4', title: 'Attend virtual check-in session', done: false, type: 'wellness' },
+  { id: 't5', title: 'Document symptoms and progress in health diary', done: false, type: 'wellness' },
+  { id: 't6', title: 'Complete prescribed physical therapy exercises', done: false, type: 'exercise' },
 ];
 
 const Recovery = () => {
@@ -41,10 +43,11 @@ const Recovery = () => {
 
   const getTaskIcon = (type: string) => {
     switch (type) {
-      case 'medication': return '💊';
-      case 'exercise': return '🏃‍♂️';
-      case 'wellness': return '💭';
-      default: return '✅';
+      case 'medication': return <Pill className="h-5 w-5 text-blue-600" />;
+      case 'exercise': return <Footprints className="h-5 w-5 text-green-600 animate-pulse" />;
+      case 'hydration': return <Droplets className="h-5 w-5 text-blue-400" />;
+      case 'wellness': return <HeartPulse className="h-5 w-5 text-purple-600" />;
+      default: return <CheckCircle className="h-5 w-5 text-gray-600" />;
     }
   };
 
