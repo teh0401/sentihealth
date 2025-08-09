@@ -39,14 +39,10 @@ const Index = () => {
       <section className="relative">
         <div className="max-w-screen-xl mx-auto px-3 py-8 sm:py-12">
           <div className="text-center space-y-4 sm:space-y-6">
-            {/* Premium Hospital Logo */}
+            {/* 3D Avatar */}
             <div className="flex justify-center mb-4 sm:mb-6">
-              <div className="w-32 h-32 sm:w-40 sm:h-40 bg-gradient-to-br from-white to-blue-50 rounded-3xl flex items-center justify-center shadow-2xl border-4 border-white/80 backdrop-blur-sm ring-2 ring-blue-100">
-                <img 
-                  src="/lovable-uploads/3beb6f70-62b9-47d0-bf0f-b6ec58ac9112.png" 
-                  alt="Hospital Malaysia Logo" 
-                  className="w-20 h-20 sm:w-24 sm:h-24 object-contain filter drop-shadow-lg"
-                />
+              <div className="w-24 h-24 sm:w-32 sm:h-32 bg-gradient-to-br from-blue-100 to-blue-200 rounded-full flex items-center justify-center shadow-lg border-2 border-white">
+                <div className="text-4xl sm:text-5xl">👩‍⚕️</div>
               </div>
             </div>
             
