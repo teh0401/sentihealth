@@ -128,12 +128,18 @@ const EnhancedARNavigator: React.FC<{ autoStart?: boolean; fullscreen?: boolean 
           setActive(true);
           setFacingMode(preferredFacingMode);
           
+          // Only start navigation if camera is actually working
           if (autoStart && !isNavigating) {
-            startNavigation();
+            setTimeout(() => {
+              if (active) { // Double-check camera is still active
+                startNavigation();
+              }
+            }, 1000);
           }
         } catch (err) {
           console.warn('Video play blocked:', err);
-          toast({ title: 'Video playback failed', description: 'Please tap to start video.', variant: 'destructive' });
+          setActive(false); // Ensure active is false if video fails
+          toast({ title: 'Camera blocked', description: 'Please tap the camera button to enable video.', variant: 'destructive' });
         }
       }
     } catch (error: any) {
@@ -166,12 +172,16 @@ const EnhancedARNavigator: React.FC<{ autoStart?: boolean; fullscreen?: boolean 
   }, [facingMode, startCamera]);
 
   const startNavigation = useCallback(() => {
+    if (!active) {
+      toast({ title: 'Camera required', description: 'Please start the camera first to begin navigation.', variant: 'destructive' });
+      return;
+    }
     setIsNavigating(true);
     setCurrentDirection(0);
     setSimulatedProgress(0);
     speak(MOCK_DIRECTIONS[0].instruction);
     toast({ title: 'Navigation started', description: 'Follow the AR directions overlay.' });
-  }, [speak]);
+  }, [active, speak]);
 
   const nextDirection = useCallback(() => {
     if (currentDirection < MOCK_DIRECTIONS.length - 1) {
