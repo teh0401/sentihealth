@@ -151,7 +151,7 @@ const AIRecoveryRecommendations = () => {
           </p>
         )}
       </CardHeader>
-      <CardContent className="p-4 sm:p-6 pt-0">
+      <CardContent className="p-2 sm:p-6 pt-0">
         {loading ? (
           <div className="space-y-3">
             {[1, 2, 3].map((i) => (
