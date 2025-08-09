@@ -12,13 +12,6 @@ const FooterNav = () => {
       aria-label="Primary footer navigation"
       className="fixed inset-x-0 bottom-0 z-30 bg-background border-t border-border shadow-formal"
     >
-      <div className="bg-gradient-to-r from-primary/5 to-primary/10 border-b border-primary/10">
-        <div className="max-w-screen-sm mx-auto px-4 py-1">
-          <div className="text-center text-xs text-muted-foreground">
-            MOH Digital Portal Navigation
-          </div>
-        </div>
-      </div>
       <ul className="max-w-screen-sm mx-auto grid grid-cols-4 md:grid-cols-3 px-4 py-2 gap-1">
         <li>
           <NavLink
