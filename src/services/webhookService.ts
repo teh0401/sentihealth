@@ -37,7 +37,9 @@ export class WebhookService {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          'Accept': 'application/json',
         },
+        mode: 'cors',
         body: JSON.stringify(payload)
       });
 
@@ -51,7 +53,12 @@ export class WebhookService {
       return result;
     } catch (error) {
       console.error('Error sending text message to webhook:', error);
-      throw error;
+      // Return fallback response instead of throwing
+      return {
+        response: "I'm having trouble connecting to the AI service. Please try again later.",
+        action: "",
+        data: null
+      };
     }
   }
 
@@ -84,7 +91,9 @@ export class WebhookService {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          'Accept': 'application/json',
         },
+        mode: 'cors',
         body: JSON.stringify(payload)
       });
 
@@ -98,7 +107,12 @@ export class WebhookService {
       return result;
     } catch (error) {
       console.error('Error sending voice message to webhook:', error);
-      throw error;
+      // Return fallback response instead of throwing
+      return {
+        response: "I'm having trouble connecting to the AI service. Please try again later.",
+        action: "",
+        data: null
+      };
     }
   }
 

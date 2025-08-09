@@ -98,38 +98,9 @@ const Enhanced3DVoiceAgent: React.FC<Enhanced3DVoiceAgentProps> = ({
       
     } catch (error) {
       console.error('Error processing voice input:', error);
-      // Fallback to original logic
-      const lowerText = text.toLowerCase();
-      
-      if (lowerText.includes("navigate") || lowerText.includes("directions") || 
-          lowerText.includes("route") || lowerText.includes("go to")) {
-        const destinations = ["Building A", "Conference Room", "Cafeteria", "Reception"];
-        const foundDestination = destinations.find(dest => 
-          lowerText.includes(dest.toLowerCase())
-        );
-        
-        if (foundDestination) {
-          setAvatarState('pointing');
-          speakWithAnim(`Navigating to ${foundDestination}. Follow me!`);
-          setTimeout(() => {
-            onNavigationTrigger?.(foundDestination);
-            setAvatarState('guiding');
-          }, 2000);
-        } else {
-          setAvatarState('speaking');
-          speakWithAnim("Where would you like to go? I can guide you to Building A, Conference Room, Cafeteria, or Reception.");
-        }
-      } else if (lowerText.includes("appointment") || lowerText.includes("booking") || 
-                 lowerText.includes("schedule")) {
-        setAvatarState('speaking');
-        speakWithAnim("I can help you book an appointment. Let me open the booking system for you.");
-      } else if (lowerText.includes("hello") || lowerText.includes("hi")) {
-        setAvatarState('celebrating');
-        speakWithAnim("Hello! I'm your AI assistant. I can help you navigate or book appointments. How can I assist you?");
-      } else {
-        setAvatarState('speaking');
-        speakWithAnim("I'm here to help with navigation and appointments. Try saying 'navigate to conference room' or 'book appointment'.");
-      }
+      // Always provide a response even if webhook fails
+      setAvatarState('speaking');
+      speakWithAnim("I'm having trouble connecting to the AI service. I can still help with basic navigation and appointments.");
     }
   }, [onNavigationTrigger]);
 

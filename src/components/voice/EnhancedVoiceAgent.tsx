@@ -91,31 +91,8 @@ const EnhancedVoiceAgent: React.FC<EnhancedVoiceAgentProps> = ({
       
     } catch (error) {
       console.error('Error processing voice input:', error);
-      // Fallback to original logic
-      const lower = text.toLowerCase();
-      
-      if (lower.includes('navigate') || lower.includes('directions') || 
-          lower.includes('take me to') || lower.includes('show me the way') || 
-          lower.includes('guide me to') || lower.includes('hospital') || 
-          lower.includes('clinic')) {
-        
-        let destination = 'your destination';
-        if (lower.includes('hospital')) destination = 'the hospital';
-        else if (lower.includes('clinic')) destination = 'the clinic';
-        else if (lower.includes('appointment')) destination = 'your appointment';
-        
-        setAvatarState('pointing');
-        onNavigationTrigger?.(destination);
-        
-        setTimeout(() => {
-          speakWithAnim(`Starting AR guidance to ${destination} now.`);
-          navigate('/navigate');
-        }, 1000);
-        
-        return;
-      }
-      
-      speakWithAnim("I'm sorry, I couldn't process your request. Please try again.");
+      // Always provide a response even if webhook fails
+      speakWithAnim("I'm having trouble connecting to the AI service. I can still help with basic navigation and appointments.");
     }
   }, [navigate, onNavigationTrigger]);
 
