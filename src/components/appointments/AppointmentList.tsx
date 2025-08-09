@@ -19,14 +19,14 @@ interface Appointment {
   clinic_name: string;
   specialty: string;
   appointment_date: string;
-  status: 'pending' | 'confirmed' | 'completed' | 'cancelled';
+  status: string; // Changed to string to match database
   notes?: string;
   created_at: string;
   clinic_id?: string;
   referral_letter_url?: string;
 }
 
-const getStatusColor = (status: Appointment['status']) => {
+const getStatusColor = (status: string) => {
   switch (status) {
     case 'pending':
       return 'bg-yellow-100 text-yellow-800 hover:bg-yellow-200';
@@ -41,7 +41,7 @@ const getStatusColor = (status: Appointment['status']) => {
   }
 };
 
-const getStatusText = (status: Appointment['status']) => {
+const getStatusText = (status: string) => {
   return status.charAt(0).toUpperCase() + status.slice(1);
 };
 
@@ -117,7 +117,7 @@ export default function AppointmentList() {
       past.setDate(past.getDate() - 14); // 2 weeks ago
       past.setHours(10, 30, 0, 0);
 
-      const demo: Partial<Appointment> & { user_id: string } = {
+      const demo = {
         user_id: userId,
         clinic_id: 'mock-facility-1',
         clinic_name: 'Hospital Kuala Lumpur',
@@ -125,7 +125,7 @@ export default function AppointmentList() {
         appointment_date: past.toISOString(),
         status: 'completed',
         notes: defaultReport,
-      } as any;
+      };
 
       const { data, error } = await supabase
         .from('appointments')
