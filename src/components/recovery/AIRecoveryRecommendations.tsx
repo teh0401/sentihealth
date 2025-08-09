@@ -192,16 +192,6 @@ const AIRecoveryRecommendations = () => {
               </div>
             ))}
             
-            {recommendations.length > 3 && (
-              <div className="pt-2 border-t">
-                <p className="text-xs sm:text-sm text-muted-foreground text-center">
-                  {recommendations.length - 3} more recommendations available. 
-                  <Button variant="link" className="p-0 h-auto text-xs sm:text-sm">
-                    View all
-                  </Button>
-                </p>
-              </div>
-            )}
             
             <div className="mt-4 p-3 bg-blue-50 border border-blue-200 rounded-lg">
               <div className="flex items-start gap-2">
