@@ -219,9 +219,14 @@ const EnhancedARNavigator: React.FC<{ autoStart?: boolean; fullscreen?: boolean 
     
     if (autoStart && !active && !loading && !error) {
       // Add a small delay to ensure component is mounted
-      timeoutId = setTimeout(() => {
-        startCamera(facingMode);
-      }, 100);
+      timeoutId = setTimeout(async () => {
+        try {
+          await startCamera(facingMode);
+        } catch (err) {
+          console.error('Auto-start camera failed:', err);
+          // Don't show error immediately, let user manually start
+        }
+      }, 500); // Increased delay for better reliability
     }
     
     return () => {
@@ -383,15 +388,16 @@ const EnhancedARNavigator: React.FC<{ autoStart?: boolean; fullscreen?: boolean 
                 <Camera className="h-12 w-12 mx-auto mb-4 text-blue-500" />
                 <h3 className="font-semibold mb-2">AR Navigation Ready</h3>
                 <p className="text-sm text-muted-foreground mb-4">
-                  Start camera to begin AR-guided navigation to your destination
+                  Tap to start camera and begin AR-guided navigation
                 </p>
                 <Button 
                   onClick={() => startCamera(facingMode)} 
                   className="w-full mb-3"
                   disabled={loading}
+                  size="lg"
                 >
                   <Camera className="h-4 w-4 mr-2" />
-                  Start Camera
+                  {autoStart ? 'Tap to Start Camera' : 'Start Camera'}
                 </Button>
                 <div className="flex gap-2">
                   <Button
@@ -400,7 +406,8 @@ const EnhancedARNavigator: React.FC<{ autoStart?: boolean; fullscreen?: boolean 
                     size="sm"
                     className="flex-1"
                   >
-                    Rear Camera
+                    <Camera className="h-3 w-3 mr-1" />
+                    Rear
                   </Button>
                   <Button
                     onClick={() => startCamera('user')}
@@ -408,9 +415,13 @@ const EnhancedARNavigator: React.FC<{ autoStart?: boolean; fullscreen?: boolean 
                     size="sm"
                     className="flex-1"
                   >
-                    Front Camera
+                    <RotateCw className="h-3 w-3 mr-1" />
+                    Front
                   </Button>
                 </div>
+                <p className="text-xs text-muted-foreground mt-3 opacity-80">
+                  Camera permissions required for AR navigation
+                </p>
               </CardContent>
             </Card>
           </div>
