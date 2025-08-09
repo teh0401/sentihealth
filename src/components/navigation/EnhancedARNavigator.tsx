@@ -291,7 +291,7 @@ const EnhancedARNavigator: React.FC<{ autoStart?: boolean; fullscreen?: boolean 
 
   if (fullscreen) {
     return (
-      <div className="fixed inset-0 bg-black z-30">
+      <div className="fixed inset-0 bg-black z-30 overflow-hidden">
         {/* Camera feed */}
         <video
           ref={videoRef}

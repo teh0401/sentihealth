@@ -11,7 +11,7 @@ const Navigate = () => {
   const [useEnhanced, setUseEnhanced] = useState(true);
   
   return (
-    <div className="min-h-screen bg-background">
+    <div className="h-screen w-screen overflow-hidden bg-background">
       {showTest ? (
         <div className="p-3 sm:p-4 space-y-3 sm:space-y-4 pb-28 sm:pb-24">
           {/* Header */}
@@ -52,8 +52,8 @@ const Navigate = () => {
         </div>
       ) : (
         <>
-          {/* Main AR Navigation */}
-          <div className="relative">
+          {/* Main AR Navigation - Fullscreen */}
+          <div className="fixed inset-0 overflow-hidden">
             {/* Header overlay */}
             <div className="absolute top-0 left-0 right-0 z-40 bg-primary text-primary-foreground">
               <div className="px-3 sm:px-4 py-1.5 sm:py-2">
