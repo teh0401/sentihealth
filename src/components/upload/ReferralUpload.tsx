@@ -54,29 +54,18 @@ const ReferralUpload: React.FC<ReferralUploadProps> = ({
     }
   }, [currentFile]);
 
-  // Ensure we have a Supabase auth user; if not, try to create an anonymous session
+  // Check if user is authenticated
   async function ensureSupabaseUser(): Promise<{ id: string }> {
     try {
-      // First check if we already have a session
+      // Check if we already have a session
       const { data: { user } } = await supabase.auth.getUser();
       if (user) return { id: user.id };
 
-      // Try anonymous sign-in for unauthenticated users
-      const { data, error } = await supabase.auth.signInAnonymously();
-
-      if (error) {
-        console.error('Auth error:', error);
-        throw new Error('Authentication required. Please sign in with MyDigital ID first.');
-      }
-
-      if (data.user) {
-        return { id: data.user.id };
-      }
-
-      throw new Error('Could not establish a session. Please try signing in again.');
+      // If no user, throw error to guide them to sign in
+      throw new Error('Please sign in with MyDigital ID to upload referral letters.');
     } catch (err: any) {
       console.error('Auth error:', err);
-      throw new Error(err?.message || 'Authentication required. Please sign in with MyDigital ID first.');
+      throw new Error(err?.message || 'Please sign in with MyDigital ID to upload referral letters.');
     }
   }
 
