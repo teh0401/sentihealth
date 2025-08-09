@@ -9,7 +9,8 @@ interface TextMessage {
 }
 
 interface VoiceMessage {
-  audio_data?: string; // base64 encoded audio
+  audio_file?: Blob; // actual audio file
+  audio_data?: string; // base64 encoded audio (fallback)
   transcript?: string; // text from speech recognition
   timestamp?: string;
   user_id?: string;
@@ -63,38 +64,44 @@ export class WebhookService {
   }
 
   static async sendVoiceMessage(
+    audioFile?: Blob,
     audioData?: string, 
     transcript?: string, 
     userId?: string
   ): Promise<WebhookResponse> {
     try {
-      const payload: VoiceMessage = {
-        timestamp: new Date().toISOString(),
-        user_id: userId
-      };
-
+      // Create FormData for file upload
+      const formData = new FormData();
+      
+      if (audioFile) {
+        formData.append('audio_file', audioFile, 'recording.webm');
+      }
+      
       if (audioData) {
-        payload.audio_data = audioData;
+        formData.append('audio_data', audioData);
       }
       
       if (transcript) {
-        payload.transcript = transcript;
+        formData.append('transcript', transcript);
       }
+      
+      if (userId) {
+        formData.append('user_id', userId);
+      }
+      
+      formData.append('timestamp', new Date().toISOString());
 
       console.log('Sending voice message to webhook:', { 
+        hasAudioFile: !!audioFile,
         hasAudio: !!audioData, 
         transcript,
-        timestamp: payload.timestamp 
+        userId,
+        timestamp: new Date().toISOString()
       });
       
       const response = await fetch(WEBHOOK_VOICE_URL, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Accept': 'application/json',
-        },
-        mode: 'cors',
-        body: JSON.stringify(payload)
+        body: formData
       });
 
       if (!response.ok) {

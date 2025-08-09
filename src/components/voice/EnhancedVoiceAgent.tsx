@@ -6,6 +6,7 @@ import { useNavigate } from "react-router-dom";
 import VoiceAvatar from "./VoiceAvatar";
 import { cn } from "@/lib/utils";
 import { WebhookService } from "@/services/webhookService";
+import { AudioRecorder, getCurrentUserId } from "@/services/audioRecorder";
 
 // Simple browser-based voice agent (no API keys). Uses Web Speech API when available.
 const hasSpeech = typeof window !== 'undefined' && (
@@ -50,14 +51,23 @@ const EnhancedVoiceAgent: React.FC<EnhancedVoiceAgentProps> = ({
   const audioCtxRef = useRef<AudioContext | null>(null);
   const analyserRef = useRef<AnalyserNode | null>(null);
   const rafRef = useRef<number | null>(null);
+  const audioRecorderRef = useRef<AudioRecorder | null>(null);
   const navigate = useNavigate();
 
-  const handleUnderstanding = useCallback(async (text: string) => {
+  const handleUnderstanding = useCallback(async (text: string, audioFile?: Blob) => {
     console.log('Voice input received:', text);
     
     try {
-      // Send to webhook for AI processing
-      const response = await WebhookService.sendTextMessage(text);
+      // Get current user ID
+      const userId = await getCurrentUserId();
+      
+      // Send both audio file and transcript to webhook
+      const response = await WebhookService.sendVoiceMessage(
+        audioFile,
+        undefined, // no base64 audio data needed since we have file
+        text,
+        userId || undefined
+      );
       
       // Handle the response
       if (response.response) {
@@ -106,6 +116,7 @@ const EnhancedVoiceAgent: React.FC<EnhancedVoiceAgentProps> = ({
       recognitionRef.current.continuous = false;
 
       let latestTranscript = '';
+      let recordedAudio: Blob | null = null;
 
       recognitionRef.current.onresult = (event: any) => {
         const last = event.results.length - 1;
@@ -114,12 +125,22 @@ const EnhancedVoiceAgent: React.FC<EnhancedVoiceAgentProps> = ({
         setTranscript(text);
       };
 
-      recognitionRef.current.onend = () => {
+      recognitionRef.current.onend = async () => {
         setListening(false);
         setAvatarState('idle');
         stopMeter();
+        
+        // Stop audio recording
+        if (audioRecorderRef.current?.isRecording()) {
+          try {
+            recordedAudio = await audioRecorderRef.current.stopRecording();
+          } catch (error) {
+            console.error('Error stopping audio recording:', error);
+          }
+        }
+        
         if (latestTranscript.trim()) {
-          handleUnderstanding(latestTranscript.trim());
+          handleUnderstanding(latestTranscript.trim(), recordedAudio || undefined);
         }
       };
 
@@ -197,20 +218,42 @@ const EnhancedVoiceAgent: React.FC<EnhancedVoiceAgentProps> = ({
     setTranscript("");
     if (recognitionRef.current) {
       try {
+        // Initialize audio recorder
+        if (!audioRecorderRef.current) {
+          audioRecorderRef.current = new AudioRecorder();
+        }
+        
+        // Start audio recording
+        await audioRecorderRef.current.startRecording();
+        
+        // Start volume meter and speech recognition
         await startMeter();
         recognitionRef.current.start();
         setListening(true);
         setAvatarState('listening');
         setIsExpanded(true);
         speakWithAnim("I'm listening. Tell me your symptoms or ask for directions.");
-      } catch {}
+      } catch (error) {
+        console.error('Error starting voice recording:', error);
+        speakWithAnim("Could not access microphone. Please check your permissions.");
+      }
     } else {
       speakWithAnim("Voice recognition not available. Please type your query on the Appointments page.");
     }
   };
 
-  const stop = () => {
+  const stop = async () => {
     if (recognitionRef.current && listening) recognitionRef.current.stop();
+    
+    // Stop audio recording if active
+    if (audioRecorderRef.current?.isRecording()) {
+      try {
+        await audioRecorderRef.current.stopRecording();
+      } catch (error) {
+        console.error('Error stopping audio recording:', error);
+      }
+    }
+    
     setListening(false);
     setAvatarState('idle');
     stopMeter();

@@ -6,6 +6,7 @@ import { Card } from "@/components/ui/card";
 import AIAssistantAvatar from "./AIAssistantAvatar";
 import LipSync from "./LipSync";
 import { WebhookService } from "@/services/webhookService";
+import { AudioRecorder, getCurrentUserId } from "@/services/audioRecorder";
 
 // Check for speech support
 const hasSpeech = typeof window !== 'undefined' && 
@@ -57,14 +58,23 @@ const Enhanced3DVoiceAgent: React.FC<Enhanced3DVoiceAgentProps> = ({
   const audioContextRef = useRef<AudioContext | null>(null);
   const analyserRef = useRef<AnalyserNode | null>(null);
   const animationFrameRef = useRef<number>();
+  const audioRecorderRef = useRef<AudioRecorder | null>(null);
 
   // Handle understanding and responses
-  const handleUnderstanding = useCallback(async (text: string) => {
+  const handleUnderstanding = useCallback(async (text: string, audioFile?: Blob) => {
     console.log('3D Voice input received:', text);
     
     try {
-      // Send to webhook for AI processing
-      const response = await WebhookService.sendTextMessage(text);
+      // Get current user ID
+      const userId = await getCurrentUserId();
+      
+      // Send both audio file and transcript to webhook
+      const response = await WebhookService.sendVoiceMessage(
+        audioFile,
+        undefined, // no base64 audio data needed since we have file
+        text,
+        userId || undefined
+      );
       
       // Handle the response
       if (response.response) {
@@ -126,7 +136,27 @@ const Enhanced3DVoiceAgent: React.FC<Enhanced3DVoiceAgentProps> = ({
       
       if (finalTranscript) {
         setTranscript(finalTranscript);
-        handleUnderstanding(finalTranscript);
+      }
+    };
+
+    recognition.onend = async () => {
+      setIsListening(false);
+      setAvatarState('idle');
+      stopMeter();
+      
+      let recordedAudio: Blob | null = null;
+      
+      // Stop audio recording
+      if (audioRecorderRef.current?.isRecording()) {
+        try {
+          recordedAudio = await audioRecorderRef.current.stopRecording();
+        } catch (error) {
+          console.error('Error stopping audio recording:', error);
+        }
+      }
+      
+      if (transcript.trim()) {
+        handleUnderstanding(transcript.trim(), recordedAudio || undefined);
       }
     };
 
@@ -200,17 +230,39 @@ const Enhanced3DVoiceAgent: React.FC<Enhanced3DVoiceAgentProps> = ({
   }, [isMuted]);
 
   // Control functions
-  const start = useCallback(() => {
+  const start = useCallback(async () => {
     if (!recognitionRef.current) return;
     
-    setIsListening(true);
-    setAvatarState('listening');
-    recognitionRef.current.start();
-    startMeter();
+    try {
+      // Initialize audio recorder
+      if (!audioRecorderRef.current) {
+        audioRecorderRef.current = new AudioRecorder();
+      }
+      
+      // Start audio recording
+      await audioRecorderRef.current.startRecording();
+      
+      setIsListening(true);
+      setAvatarState('listening');
+      recognitionRef.current.start();
+      startMeter();
+    } catch (error) {
+      console.error('Error starting voice recording:', error);
+      speakWithAnim("Could not access microphone. Please check your permissions.");
+    }
   }, [startMeter]);
 
-  const stop = useCallback(() => {
+  const stop = useCallback(async () => {
     if (!recognitionRef.current) return;
+    
+    // Stop audio recording if active
+    if (audioRecorderRef.current?.isRecording()) {
+      try {
+        await audioRecorderRef.current.stopRecording();
+      } catch (error) {
+        console.error('Error stopping audio recording:', error);
+      }
+    }
     
     setIsListening(false);
     setAvatarState('idle');
