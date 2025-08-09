@@ -3,13 +3,12 @@ import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { Calendar, MapPin, HeartHandshake, UserPlus, Info, MessageCircle, X, ShieldCheck, ArrowRight } from "lucide-react";
 import { useState, useEffect } from "react";
+import { useLanguage } from "@/context/LanguageContext";
 
 const Index = () => {
-  const [language, setLanguage] = useState<'en' | 'bm'>('en');
+  const { getText } = useLanguage();
   const [showAssistant, setShowAssistant] = useState(false);
   const [isSignedIn, setIsSignedIn] = useState(false);
-
-  const getText = (en: string, bm: string) => language === 'en' ? en : bm;
 
   useEffect(() => {
     try {

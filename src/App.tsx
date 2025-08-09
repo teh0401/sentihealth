@@ -6,6 +6,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
 import { AccessibilityProvider } from "./context/AccessibilityContext";
+import { LanguageProvider } from "./context/LanguageContext";
 import Header from "./components/layout/Header";
 import Appointments from "./pages/Appointments";
 import Navigate from "./pages/Navigate";
@@ -20,6 +21,7 @@ const App = () => (
   <QueryClientProvider client={queryClient}>
     <TooltipProvider>
       <AccessibilityProvider>
+        <LanguageProvider>
         <Toaster />
         <Sonner />
         <BrowserRouter>
@@ -36,6 +38,7 @@ const App = () => (
           <FooterNav />
           <VoiceARIntegration />
         </BrowserRouter>
+        </LanguageProvider>
       </AccessibilityProvider>
     </TooltipProvider>
   </QueryClientProvider>

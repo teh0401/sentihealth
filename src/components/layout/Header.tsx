@@ -3,16 +3,10 @@ import AccessibilityToggle from "@/components/AccessibilityToggle";
 import { Building2, Shield, Globe } from "lucide-react";
 import SignInMyDigitalID from "@/components/auth/SignInMyDigitalID";
 import { Button } from "@/components/ui/button";
-import { useState } from "react";
+import { useLanguage } from "@/context/LanguageContext";
 
 const Header = () => {
-  const [language, setLanguage] = useState<'en' | 'bm'>('en');
-
-  const toggleLanguage = () => {
-    setLanguage(prev => prev === 'en' ? 'bm' : 'en');
-  };
-
-  const getText = (en: string, bm: string) => language === 'en' ? en : bm;
+  const { language, toggleLanguage, getText } = useLanguage();
 
   return (
     <header className="w-full sticky top-0 z-40 bg-white shadow-md border-b border-blue-100">
