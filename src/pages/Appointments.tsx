@@ -244,13 +244,6 @@ const Appointments = () => {
       {/* Page Header */}
       <section className="border-b pb-4 sm:pb-6">
         <div className="space-y-3 sm:space-y-4">
-          <div className="flex items-center gap-2 text-xs sm:text-sm text-muted-foreground overflow-x-auto">
-            <span className="whitespace-nowrap">MOH Digital Portal</span>
-            <span>›</span>
-            <span className="whitespace-nowrap">Healthcare Services</span>
-            <span>›</span>
-            <span className="text-foreground font-medium whitespace-nowrap">Appointment Booking</span>
-          </div>
           <div className="flex items-start justify-between gap-4">
             <div>
               <h1 className="text-2xl sm:text-3xl font-bold text-foreground">Book Medical Appointments</h1>
