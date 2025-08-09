@@ -3,6 +3,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { HeartPulse, CheckCircle, Trophy, Clock, Calendar } from "lucide-react";
+import AIRecoveryRecommendations from "@/components/recovery/AIRecoveryRecommendations";
 
 interface Task { id: string; title: string; done: boolean; type: 'medication' | 'exercise' | 'wellness'; }
 
@@ -203,6 +204,9 @@ const Recovery = () => {
           </div>
         </CardContent>
       </Card>
+
+      {/* AI Recommendations */}
+      <AIRecoveryRecommendations />
 
       {/* Information Section */}
       <Card className="bg-muted/30">
