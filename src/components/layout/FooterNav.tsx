@@ -19,7 +19,7 @@ const FooterNav = () => {
           </div>
         </div>
       </div>
-      <ul className="max-w-screen-sm mx-auto grid grid-cols-4 px-4 py-2">
+      <ul className="max-w-screen-sm mx-auto grid grid-cols-4 md:grid-cols-3 px-4 py-2 gap-1">
         <li>
           <NavLink
             to="/appointments"
