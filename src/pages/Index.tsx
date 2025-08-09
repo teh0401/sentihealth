@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { Calendar, MapPin, HeartHandshake, UserPlus, Info, MessageCircle, X, ShieldCheck, ArrowRight } from "lucide-react";
 import { useState, useEffect } from "react";
+import hospitalLogo from "@/assets/hospital-logo.png";
 
 const Index = () => {
   const [language, setLanguage] = useState<'en' | 'bm'>('en');
@@ -204,7 +205,7 @@ const Index = () => {
           onClick={() => setShowAssistant(true)}
           className="w-14 h-14 sm:w-16 sm:h-16 rounded-full bg-gradient-to-br from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 shadow-lg hover:shadow-xl transition-all duration-200 active:scale-95 touch-manipulation"
         >
-          <div className="text-xl sm:text-2xl">👨‍⚕️</div>
+          <img src={hospitalLogo} alt="Hospital" className="w-6 h-6 sm:w-8 sm:h-8" />
         </Button>
       </div>
 
@@ -228,7 +229,7 @@ const Index = () => {
             <div className="space-y-3">
               <div className="flex items-start gap-3">
                 <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center flex-shrink-0">
-                  <div className="text-lg">👨‍⚕️</div>
+                  <img src={hospitalLogo} alt="Hospital" className="w-5 h-5" />
                 </div>
                 <div className="flex-1">
                   <p className="text-sm sm:text-base text-gray-700 leading-relaxed">
