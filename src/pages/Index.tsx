@@ -42,9 +42,11 @@ const Index = () => {
             {/* Premium Hospital Logo */}
             <div className="flex justify-center mb-4 sm:mb-6">
               <div className="w-32 h-32 sm:w-40 sm:h-40 bg-gradient-to-br from-white to-blue-50 rounded-3xl flex items-center justify-center shadow-2xl border-4 border-white/80 backdrop-blur-sm ring-2 ring-blue-100">
-                <div className="w-20 h-20 sm:w-24 sm:h-24 bg-gradient-to-br from-blue-500 to-blue-600 rounded-2xl flex items-center justify-center shadow-lg">
-                  <div className="text-white text-3xl sm:text-4xl font-bold">🏥</div>
-                </div>
+                <img 
+                  src="/lovable-uploads/3beb6f70-62b9-47d0-bf0f-b6ec58ac9112.png" 
+                  alt="Hospital Malaysia Logo" 
+                  className="w-20 h-20 sm:w-24 sm:h-24 object-contain filter drop-shadow-lg"
+                />
               </div>
             </div>
             
