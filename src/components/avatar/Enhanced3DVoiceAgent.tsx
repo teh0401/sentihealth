@@ -352,7 +352,7 @@ const Enhanced3DVoiceAgent: React.FC<Enhanced3DVoiceAgentProps> = ({
 
       {/* Floating button */}
       <motion.button
-        className="fixed bottom-4 right-4 w-14 h-14 bg-primary text-primary-foreground rounded-full shadow-lg z-40 flex items-center justify-center"
+        className="fixed bottom-4 right-4 sm:bottom-4 sm:right-4 w-14 h-14 bg-primary text-primary-foreground rounded-full shadow-lg z-40 flex items-center justify-center hidden sm:flex"
         onClick={() => setIsExpanded(!isExpanded)}
         animate={{
           scale: isListening ? [1, 1.1, 1] : 1,

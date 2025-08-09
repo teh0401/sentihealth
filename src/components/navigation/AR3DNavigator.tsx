@@ -4,7 +4,7 @@ import { Html, Text } from '@react-three/drei';
 import { Vector3, Group } from 'three';
 import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
-import { X, Navigation } from 'lucide-react';
+import { X, Navigation, RotateCcw } from 'lucide-react';
 import Avatar3D from '../avatar/Avatar3D';
 
 // Simulated BLE positioning data
@@ -112,6 +112,7 @@ const AR3DNavigator: React.FC<AR3DNavigatorProps> = ({
   const [route, setRoute] = useState<RouteNode[]>([]);
   const [currentStepIndex, setCurrentStepIndex] = useState(0);
   const [arrived, setArrived] = useState(false);
+  const [cameraFacing, setCameraFacing] = useState<'environment' | 'user'>('environment');
 
   // Clean up camera stream
   const cleanupStream = useCallback(() => {
@@ -134,6 +135,29 @@ const AR3DNavigator: React.FC<AR3DNavigatorProps> = ({
     setRoute(routeNodes);
     setCurrentStepIndex(0);
     return routeNodes;
+  }, []);
+
+  // Helper to start a camera stream with a preferred facing mode, with fallbacks
+  const startStreamWithFacing = useCallback(async (facing: 'environment' | 'user'): Promise<MediaStream> => {
+    // Try preferred facing with constraints
+    const preferredConstraints: MediaStreamConstraints = {
+      video: {
+        facingMode: { ideal: facing },
+        width: { ideal: 1280, min: 640 },
+        height: { ideal: 720, min: 480 },
+      }
+    } as any;
+    try {
+      return await navigator.mediaDevices.getUserMedia(preferredConstraints);
+    } catch (err: any) {
+      // Fallback to simple facing string
+      try {
+        return await navigator.mediaDevices.getUserMedia({ video: { facingMode: facing } });
+      } catch {
+        // Final fallback to any camera
+        return await navigator.mediaDevices.getUserMedia({ video: true });
+      }
+    }
   }, []);
 
   // Start AR guidance
@@ -167,18 +191,8 @@ const AR3DNavigator: React.FC<AR3DNavigatorProps> = ({
       // Calculate route first
       const routeNodes = calculateRoute(destination);
       
-      // Request camera access with fallback options
-      const constraints = {
-        video: {
-          facingMode: 'user', // Start with front camera for better compatibility
-          width: { ideal: 1280, min: 640 },
-          height: { ideal: 720, min: 480 }
-        }
-      };
-
-      console.log('📡 Requesting camera permission with constraints:', constraints);
-      
-      const stream = await navigator.mediaDevices.getUserMedia(constraints);
+      console.log('📡 Requesting camera permission. Preferred facing:', cameraFacing);
+      const stream = await startStreamWithFacing(cameraFacing);
       streamRef.current = stream;
       
       console.log('✅ Camera stream obtained:', {
@@ -264,7 +278,7 @@ const AR3DNavigator: React.FC<AR3DNavigatorProps> = ({
         console.error('🚫 Permission denied for camera access');
         setPermissionDenied(true);
         setError('Camera permission denied. Please allow camera access in your browser settings and refresh the page.');
-      } else if (err.name === 'NotFoundError') {
+       } else if (err.name === 'NotFoundError') {
         console.error('📷 No camera found on device');
         setError('No camera found. Please ensure your device has a working camera.');
       } else if (err.name === 'NotSupportedError') {
@@ -273,7 +287,7 @@ const AR3DNavigator: React.FC<AR3DNavigatorProps> = ({
       } else if (err.name === 'NotReadableError') {
         console.error('🔒 Camera in use by another application');
         setError('Camera is being used by another application. Please close other apps using the camera.');
-      } else if (err.name === 'OverconstrainedError') {
+       } else if (err.name === 'OverconstrainedError') {
         console.error('⚙️ Camera constraints too restrictive, trying fallback...');
         // Try with less restrictive constraints
         console.log('Constraints too restrictive, trying with basic constraints...');
@@ -397,6 +411,23 @@ const AR3DNavigator: React.FC<AR3DNavigatorProps> = ({
     );
   }
 
+  const flipCamera = useCallback(async () => {
+    try {
+      const next = cameraFacing === 'environment' ? 'user' : 'environment';
+      cleanupStream();
+      const stream = await startStreamWithFacing(next);
+      streamRef.current = stream;
+      if (videoRef.current) {
+        videoRef.current.srcObject = stream;
+        await videoRef.current.play();
+      }
+      setCameraFacing(next);
+    } catch (err) {
+      console.error('Flip camera failed', err);
+      setError('Failed to switch camera.');
+    }
+  }, [cameraFacing, startStreamWithFacing, cleanupStream]);
+
   return (
     <div className={`${fullscreen ? 'fixed inset-0' : 'relative w-full h-96'} bg-black overflow-hidden`}>
       {/* Camera feed */}
@@ -409,7 +440,7 @@ const AR3DNavigator: React.FC<AR3DNavigatorProps> = ({
         style={{ 
           backgroundColor: '#000',
           zIndex: 5,
-          transform: 'scaleX(-1)' // Mirror the video for better UX
+          transform: cameraFacing === 'user' ? 'scaleX(-1)' : 'none' // Mirror only front camera
         }}
       />
 
@@ -497,7 +528,7 @@ const AR3DNavigator: React.FC<AR3DNavigatorProps> = ({
               </Button>
             </div>
             
-            <div className="text-sm space-y-1">
+              <div className="text-sm space-y-1">
               <div className="flex items-center gap-2">
                 <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
                 Camera Active
@@ -511,6 +542,12 @@ const AR3DNavigator: React.FC<AR3DNavigatorProps> = ({
               {arrived && (
                 <div className="text-green-400 font-semibold">🎉 You have arrived!</div>
               )}
+                <div className="pt-2 flex items-center gap-2">
+                  <Button size="sm" variant="secondary" onClick={flipCamera} className="text-black">
+                    <RotateCcw className="h-4 w-4 mr-1" /> Flip Camera
+                  </Button>
+                  <span className="opacity-70 text-xs">Using: {cameraFacing === 'environment' ? 'Back' : 'Front'} camera</span>
+                </div>
             </div>
           </div>
         </motion.div>

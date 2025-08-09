@@ -10,6 +10,7 @@ import Header from "./components/layout/Header";
 import Appointments from "./pages/Appointments";
 import Navigate from "./pages/Navigate";
 import Recovery from "./pages/Recovery";
+import SignIn from "./pages/SignIn";
 import VoiceARIntegration from "./components/integrated/VoiceARIntegration";
 import FooterNav from "./components/layout/FooterNav";
 
@@ -25,6 +26,7 @@ const App = () => (
           <Header />
           <Routes>
             <Route path="/" element={<Index />} />
+            <Route path="/signin" element={<SignIn />} />
             <Route path="/appointments" element={<Appointments />} />
             <Route path="/navigate" element={<Navigate />} />
             <Route path="/recovery" element={<Recovery />} />
