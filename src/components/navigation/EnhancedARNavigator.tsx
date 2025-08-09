@@ -146,13 +146,16 @@ const EnhancedARNavigator: React.FC<{ autoStart?: boolean; fullscreen?: boolean 
           setActive(true);
           setFacingMode(preferredFacingMode);
           
-          // Only start navigation if camera is actually working
-          if (autoStart && !isNavigating) {
+          // Auto-start navigation when camera is working
+          if (autoStart) {
             setTimeout(() => {
-              if (active) { // Double-check camera is still active
-                startNavigation();
-              }
-            }, 1000);
+              console.log('Auto-starting navigation...');
+              setIsNavigating(true);
+              setCurrentDirection(0);
+              setSimulatedProgress(0);
+              speak(MOCK_DIRECTIONS[0].instruction);
+              toast({ title: 'Navigation started', description: 'Follow the AR directions overlay.' });
+            }, 500);
           }
         } catch (err) {
           console.warn('Video play blocked:', err);
@@ -298,8 +301,8 @@ const EnhancedARNavigator: React.FC<{ autoStart?: boolean; fullscreen?: boolean 
           autoPlay
         />
 
-        {/* AR Overlay */}
-        {active && isNavigating && (
+        {/* AR Overlay - Show when camera is active */}
+        {active && (
           <div className="absolute inset-0 pointer-events-none">
             {/* Direction indicator */}
             <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
