@@ -184,7 +184,7 @@ const Index = () => {
       </section>
 
       {/* Emergency Section */}
-      <section className="bg-gradient-to-r from-red-50 to-red-100 border-t border-red-200 mb-16 sm:mb-4">
+      <section className="bg-gradient-to-r from-red-50 to-red-100 border-t border-red-200 pb-24">
         <div className="max-w-screen-xl mx-auto px-3 py-8 sm:py-12 text-center">
           <h2 className="text-xl sm:text-3xl font-bold text-red-600 mb-4 sm:mb-6">
             {getText("Kecemasan?", "Emergency?")}

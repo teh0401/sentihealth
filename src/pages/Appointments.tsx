@@ -240,7 +240,7 @@ const Appointments = () => {
   };
 
   return (
-    <main className="max-w-screen-xl mx-auto px-4 py-4 sm:py-8 space-y-6 sm:space-y-8 mb-20 sm:mb-4">
+    <main className="max-w-screen-xl mx-auto px-4 py-4 sm:py-8 space-y-6 sm:space-y-8 pb-24">
       {/* Page Header */}
       <section className="border-b pb-4 sm:pb-6">
         <div className="space-y-3 sm:space-y-4">

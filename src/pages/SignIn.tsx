@@ -141,7 +141,7 @@ const SignIn = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-green-50">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-green-50 pb-24">
       <div className="container max-w-lg mx-auto px-4 py-8">
         {/* Header */}
         <div className="flex items-center gap-3 mb-8">
