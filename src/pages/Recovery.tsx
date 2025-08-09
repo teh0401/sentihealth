@@ -43,11 +43,16 @@ const Recovery = () => {
 
   const getTaskIcon = (type: string) => {
     switch (type) {
-      case 'medication': return <Pill className="h-5 w-5 text-blue-600" />;
-      case 'exercise': return <Footprints className="h-5 w-5 text-green-600 animate-pulse" />;
-      case 'hydration': return <Droplets className="h-5 w-5 text-blue-400" />;
-      case 'wellness': return <HeartPulse className="h-5 w-5 text-purple-600" />;
-      default: return <CheckCircle className="h-5 w-5 text-gray-600" />;
+      case 'medication': 
+        return <Pill className="h-5 w-5 text-blue-600 hover:scale-110 transition-transform" />;
+      case 'exercise': 
+        return <Footprints className="h-5 w-5 text-green-600 animate-pulse hover:animate-bounce" />;
+      case 'hydration': 
+        return <Droplets className="h-5 w-5 text-blue-400 hover:scale-110 transition-transform" />;
+      case 'wellness': 
+        return <HeartPulse className="h-5 w-5 text-purple-600 animate-pulse" />;
+      default: 
+        return <CheckCircle className="h-5 w-5 text-gray-600" />;
     }
   };
 
@@ -155,7 +160,7 @@ const Recovery = () => {
               t.done ? 'bg-muted/30 border-green-200' : 'bg-background border-border hover:border-primary/50'
             }`}>
               <div className="flex items-start gap-2 sm:gap-3 flex-1 min-w-0">
-                <div className="text-lg sm:text-xl flex-shrink-0">{getTaskIcon(t.type)}</div>
+                <div className="flex-shrink-0 p-1">{getTaskIcon(t.type)}</div>
                 <div className="flex-1 min-w-0">
                   <span className={`font-medium text-sm sm:text-base block ${t.done ? 'line-through text-muted-foreground' : 'text-foreground'}`}>
                     {t.title}
