@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
 import VoiceAvatar from "./VoiceAvatar";
 import { cn } from "@/lib/utils";
+import { WebhookService } from "@/services/webhookService";
 
 // Simple browser-based voice agent (no API keys). Uses Web Speech API when available.
 const hasSpeech = typeof window !== 'undefined' && (
@@ -51,39 +52,71 @@ const EnhancedVoiceAgent: React.FC<EnhancedVoiceAgentProps> = ({
   const rafRef = useRef<number | null>(null);
   const navigate = useNavigate();
 
-  const handleUnderstanding = useCallback((text: string) => {
+  const handleUnderstanding = useCallback(async (text: string) => {
     console.log('Voice input received:', text);
-    const lower = text.toLowerCase();
     
-    if (lower.includes('navigate') || lower.includes('directions') || 
-        lower.includes('take me to') || lower.includes('show me the way') || 
-        lower.includes('guide me to') || lower.includes('hospital') || 
-        lower.includes('clinic')) {
+    try {
+      // Send to webhook for AI processing
+      const response = await WebhookService.sendTextMessage(text);
       
-      // Extract destination from voice command
-      let destination = 'your destination';
-      if (lower.includes('hospital')) destination = 'the hospital';
-      else if (lower.includes('clinic')) destination = 'the clinic';
-      else if (lower.includes('appointment')) destination = 'your appointment';
+      // Handle the response
+      if (response.response) {
+        speakWithAnim(response.response);
+      }
       
-      // Set pointing state before navigation
-      setAvatarState('pointing');
+      // Handle any actions returned by the webhook
+      if (response.action) {
+        const action = response.action.toLowerCase();
+        
+        if (action.includes('navigate') || action.includes('directions')) {
+          setAvatarState('pointing');
+          onNavigationTrigger?.(response.data?.destination || 'your destination');
+          
+          setTimeout(() => {
+            navigate('/navigate');
+          }, 1000);
+        } else if (action.includes('appointments') || action.includes('booking')) {
+          navigate(`/appointments?query=${encodeURIComponent(text)}`);
+        }
+      }
       
-      // Call the navigation trigger prop if provided
-      onNavigationTrigger?.(destination);
+      // Play audio response if provided
+      if (response.audio_response) {
+        try {
+          await WebhookService.playAudioResponse(response.audio_response);
+        } catch (audioError) {
+          console.error('Error playing audio response:', audioError);
+        }
+      }
       
-      // Navigate after a short delay to show pointing animation
-      setTimeout(() => {
-        speakWithAnim(`Starting AR guidance to ${destination} now.`);
-        navigate('/navigate');
-      }, 1000);
+    } catch (error) {
+      console.error('Error processing voice input:', error);
+      // Fallback to original logic
+      const lower = text.toLowerCase();
       
-      return;
+      if (lower.includes('navigate') || lower.includes('directions') || 
+          lower.includes('take me to') || lower.includes('show me the way') || 
+          lower.includes('guide me to') || lower.includes('hospital') || 
+          lower.includes('clinic')) {
+        
+        let destination = 'your destination';
+        if (lower.includes('hospital')) destination = 'the hospital';
+        else if (lower.includes('clinic')) destination = 'the clinic';
+        else if (lower.includes('appointment')) destination = 'your appointment';
+        
+        setAvatarState('pointing');
+        onNavigationTrigger?.(destination);
+        
+        setTimeout(() => {
+          speakWithAnim(`Starting AR guidance to ${destination} now.`);
+          navigate('/navigate');
+        }, 1000);
+        
+        return;
+      }
+      
+      speakWithAnim("I'm sorry, I couldn't process your request. Please try again.");
     }
-    
-    // Default to appointment search
-    speakWithAnim("Let me find suitable clinics for you.");
-    navigate(`/appointments?query=${encodeURIComponent(text)}`);
   }, [navigate, onNavigationTrigger]);
 
   useEffect(() => {

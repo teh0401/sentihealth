@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import AIAssistantAvatar from "./AIAssistantAvatar";
 import LipSync from "./LipSync";
+import { WebhookService } from "@/services/webhookService";
 
 // Check for speech support
 const hasSpeech = typeof window !== 'undefined' && 
@@ -58,37 +59,77 @@ const Enhanced3DVoiceAgent: React.FC<Enhanced3DVoiceAgentProps> = ({
   const animationFrameRef = useRef<number>();
 
   // Handle understanding and responses
-  const handleUnderstanding = useCallback((text: string) => {
-    const lowerText = text.toLowerCase();
+  const handleUnderstanding = useCallback(async (text: string) => {
+    console.log('3D Voice input received:', text);
     
-    if (lowerText.includes("navigate") || lowerText.includes("directions") || 
-        lowerText.includes("route") || lowerText.includes("go to")) {
-      const destinations = ["Building A", "Conference Room", "Cafeteria", "Reception"];
-      const foundDestination = destinations.find(dest => 
-        lowerText.includes(dest.toLowerCase())
-      );
+    try {
+      // Send to webhook for AI processing
+      const response = await WebhookService.sendTextMessage(text);
       
-      if (foundDestination) {
-        setAvatarState('pointing');
-        speakWithAnim(`Navigating to ${foundDestination}. Follow me!`);
-        setTimeout(() => {
-          onNavigationTrigger?.(foundDestination);
-          setAvatarState('guiding');
-        }, 2000);
+      // Handle the response
+      if (response.response) {
+        setAvatarState('speaking');
+        speakWithAnim(response.response);
+      }
+      
+      // Handle any actions returned by the webhook
+      if (response.action) {
+        const action = response.action.toLowerCase();
+        
+        if (action.includes('navigate') || action.includes('directions')) {
+          setAvatarState('pointing');
+          setTimeout(() => {
+            onNavigationTrigger?.(response.data?.destination || 'your destination');
+            setAvatarState('guiding');
+          }, 2000);
+        } else if (action.includes('appointments') || action.includes('booking')) {
+          setAvatarState('celebrating');
+        }
+      }
+      
+      // Play audio response if provided
+      if (response.audio_response) {
+        try {
+          await WebhookService.playAudioResponse(response.audio_response);
+        } catch (audioError) {
+          console.error('Error playing audio response:', audioError);
+        }
+      }
+      
+    } catch (error) {
+      console.error('Error processing voice input:', error);
+      // Fallback to original logic
+      const lowerText = text.toLowerCase();
+      
+      if (lowerText.includes("navigate") || lowerText.includes("directions") || 
+          lowerText.includes("route") || lowerText.includes("go to")) {
+        const destinations = ["Building A", "Conference Room", "Cafeteria", "Reception"];
+        const foundDestination = destinations.find(dest => 
+          lowerText.includes(dest.toLowerCase())
+        );
+        
+        if (foundDestination) {
+          setAvatarState('pointing');
+          speakWithAnim(`Navigating to ${foundDestination}. Follow me!`);
+          setTimeout(() => {
+            onNavigationTrigger?.(foundDestination);
+            setAvatarState('guiding');
+          }, 2000);
+        } else {
+          setAvatarState('speaking');
+          speakWithAnim("Where would you like to go? I can guide you to Building A, Conference Room, Cafeteria, or Reception.");
+        }
+      } else if (lowerText.includes("appointment") || lowerText.includes("booking") || 
+                 lowerText.includes("schedule")) {
+        setAvatarState('speaking');
+        speakWithAnim("I can help you book an appointment. Let me open the booking system for you.");
+      } else if (lowerText.includes("hello") || lowerText.includes("hi")) {
+        setAvatarState('celebrating');
+        speakWithAnim("Hello! I'm your AI assistant. I can help you navigate or book appointments. How can I assist you?");
       } else {
         setAvatarState('speaking');
-        speakWithAnim("Where would you like to go? I can guide you to Building A, Conference Room, Cafeteria, or Reception.");
+        speakWithAnim("I'm here to help with navigation and appointments. Try saying 'navigate to conference room' or 'book appointment'.");
       }
-    } else if (lowerText.includes("appointment") || lowerText.includes("booking") || 
-               lowerText.includes("schedule")) {
-      setAvatarState('speaking');
-      speakWithAnim("I can help you book an appointment. Let me open the booking system for you.");
-    } else if (lowerText.includes("hello") || lowerText.includes("hi")) {
-      setAvatarState('celebrating');
-      speakWithAnim("Hello! I'm your AI assistant. I can help you navigate or book appointments. How can I assist you?");
-    } else {
-      setAvatarState('speaking');
-      speakWithAnim("I'm here to help with navigation and appointments. Try saying 'navigate to conference room' or 'book appointment'.");
     }
   }, [onNavigationTrigger]);
 

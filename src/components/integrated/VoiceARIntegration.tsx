@@ -2,6 +2,7 @@ import React, { useState, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import Enhanced3DVoiceAgent from '../avatar/Enhanced3DVoiceAgent';
+import TextChatInput from '../voice/TextChatInput';
 
 interface VoiceARIntegrationProps {
   className?: string;
@@ -27,6 +28,25 @@ const VoiceARIntegration: React.FC<VoiceARIntegrationProps> = ({ className }) =>
     <div className={className}>
       {/* Enhanced 3D Voice Agent */}
       <Enhanced3DVoiceAgent onNavigationTrigger={handleNavigationTrigger} />
+      
+      {/* Text chat input for testing */}
+      <div className="fixed bottom-6 left-6 z-40 max-w-sm">
+        <div className="bg-card/95 backdrop-blur-md border shadow-lg rounded-lg p-3">
+          <h4 className="text-sm font-medium mb-2 text-muted-foreground">
+            Test AI Assistant
+          </h4>
+          <TextChatInput 
+            placeholder="Type to test webhook..."
+            onResponse={(response) => console.log('Text response:', response)}
+            onAction={(action, data) => {
+              console.log('Action received:', action, data);
+              if (action.toLowerCase().includes('navigate')) {
+                handleNavigationTrigger(data?.destination || 'test destination');
+              }
+            }}
+          />
+        </div>
+      </div>
 
       {/* Handoff Effect Overlay */}
       <AnimatePresence>
