@@ -2,16 +2,15 @@ import { useEffect, useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { HeartPulse, CheckCircle, Trophy, Clock, Calendar } from "lucide-react";
+import { HeartPulse, CheckCircle, Trophy, Clock, Calendar, Footprints, Droplets, Pill } from "lucide-react";
 import AIRecoveryRecommendations from "@/components/recovery/AIRecoveryRecommendations";
 
-interface Task { id: string; title: string; done: boolean; type: 'medication' | 'exercise' | 'wellness'; }
+interface Task { id: string; title: string; done: boolean; type: 'medication' | 'exercise' | 'wellness' | 'hydration'; }
 
 const initialTasks: Task[] = [
-  { id: 't1', title: 'Complete prescribed physical therapy exercises (15 minutes)', done: false, type: 'exercise' },
-  { id: 't2', title: 'Take morning medications as prescribed', done: false, type: 'medication' },
-  { id: 't3', title: 'Attend virtual check-in session', done: false, type: 'wellness' },
-  { id: 't4', title: 'Document symptoms and progress in health diary', done: false, type: 'wellness' },
+  { id: 't1', title: 'Walk for 10 minutes', done: false, type: 'exercise' },
+  { id: 't2', title: 'Drink a glass of water', done: false, type: 'hydration' },
+  { id: 't3', title: 'Take medication A', done: false, type: 'medication' },
 ];
 
 const Recovery = () => {
@@ -39,10 +38,22 @@ const Recovery = () => {
     }
   };
 
-  const getTaskIcon = (type: string) => {
+  const getTaskIcon = (title: string, type: string) => {
+    if (title === 'Walk for 10 minutes') {
+      return <Footprints className="h-5 w-5 text-green-600 animate-pulse hover:animate-bounce transition-all" />;
+    }
+    if (title === 'Drink a glass of water') {
+      return <Droplets className="h-5 w-5 text-blue-600 hover:scale-110 transition-transform" />;
+    }
+    if (title === 'Take medication A') {
+      return <Pill className="h-5 w-5 text-blue-600 hover:scale-110 transition-transform" />;
+    }
+    
+    // Fallback for other tasks
     switch (type) {
-      case 'medication': return '💊';
-      case 'exercise': return '🏃‍♂️';
+      case 'medication': return <Pill className="h-5 w-5 text-blue-600" />;
+      case 'exercise': return <Footprints className="h-5 w-5 text-green-600" />;
+      case 'hydration': return <Droplets className="h-5 w-5 text-blue-600" />;
       case 'wellness': return '💭';
       default: return '✅';
     }
@@ -152,7 +163,9 @@ const Recovery = () => {
               t.done ? 'bg-muted/30 border-green-200' : 'bg-background border-border hover:border-primary/50'
             }`}>
               <div className="flex items-start gap-2 sm:gap-3 flex-1 min-w-0">
-                <div className="text-lg sm:text-xl flex-shrink-0">{getTaskIcon(t.type)}</div>
+                <div className="flex-shrink-0 flex items-center justify-center w-8 h-8 rounded-full bg-muted/50">
+                  {getTaskIcon(t.title, t.type)}
+                </div>
                 <div className="flex-1 min-w-0">
                   <span className={`font-medium text-sm sm:text-base block ${t.done ? 'line-through text-muted-foreground' : 'text-foreground'}`}>
                     {t.title}
