@@ -1,6 +1,6 @@
 // Webhook service for healthcare AI assistant
-const WEBHOOK_TEXT_URL = "https://kaisan.app.n8n.cloud/webhook-test/healthcare-message";
-const WEBHOOK_VOICE_URL = "https://kaisan.app.n8n.cloud/webhook-test/healthcare-voice";
+const WEBHOOK_TEXT_URL = "https://kaisan.app.n8n.cloud/webhook/healthcare-message";
+const WEBHOOK_VOICE_URL = "https://kaisan.app.n8n.cloud/webhook/healthcare-voice";
 
 interface TextMessage {
   message: string;
