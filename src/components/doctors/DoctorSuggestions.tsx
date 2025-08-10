@@ -410,16 +410,6 @@ const DoctorSuggestions: React.FC<DoctorSuggestionsProps> = ({
                   </div>
                 )}
               </div>
-
-              {suggestion.availableSlots.length > 0 && (
-                <Button 
-                  onClick={() => handleBooking(suggestion)}
-                  className="w-full py-6 text-lg mt-4"
-                  disabled={selectedSlots[suggestion.doctor.id] === undefined}
-                >
-                  Book Appointment
-                </Button>
-              )}
             </CardContent>
           </Card>
         ))}
