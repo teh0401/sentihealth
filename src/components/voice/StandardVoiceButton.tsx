@@ -65,13 +65,34 @@ const StandardVoiceButton: React.FC<StandardVoiceButtonProps> = ({
     console.log('Voice input received:', text);
     
     // Check for navigation commands locally first
-    const lowerText = text.toLowerCase();
-    if (lowerText.includes('navigate me to') || lowerText.includes('navigate to') || lowerText.includes('take me to')) {
+    const lowerText = text.toLowerCase().trim();
+    console.log('Checking for navigation in:', lowerText);
+    
+    if (lowerText.includes('navigate me to') || 
+        lowerText.includes('navigate to') || 
+        lowerText.includes('take me to') ||
+        lowerText.startsWith('navigate me') ||
+        lowerText.startsWith('navigate to') ||
+        lowerText.startsWith('take me')) {
       console.log('🗺️ Navigation command detected locally:', text);
       setAvatarState('pointing');
-      const destination = text.replace(/navigate me to|navigate to|take me to/i, '').trim();
+      
+      // Extract destination - try multiple patterns
+      let destination = '';
+      if (lowerText.includes('navigate me to ')) {
+        destination = text.substring(text.toLowerCase().indexOf('navigate me to ') + 15).trim();
+      } else if (lowerText.includes('navigate to ')) {
+        destination = text.substring(text.toLowerCase().indexOf('navigate to ') + 12).trim();
+      } else if (lowerText.includes('take me to ')) {
+        destination = text.substring(text.toLowerCase().indexOf('take me to ') + 11).trim();
+      } else {
+        destination = 'your destination';
+      }
+      
+      console.log('Extracted destination:', destination);
       await speakWithAnim(`Starting navigation${destination ? ` to ${destination}` : ''}. Opening camera view now.`);
       setTimeout(() => {
+        console.log('Triggering navigation callback...');
         onNavigationTrigger?.(destination || 'your destination');
         setAvatarState('guiding');
       }, 1000);
