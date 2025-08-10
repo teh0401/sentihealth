@@ -242,6 +242,7 @@ const AIAssistantAvatar: React.FC<AIAssistantAvatarProps> = ({
       exit={{ opacity: 0, scale: 0.9 }}
       transition={{ duration: 0.4, ease: "easeOut" }}
     >
+      <style>{#avatar-canvas canvas {width: 100% !important;height: 100% !important;}}</style>
       {/* Background with gradient and shadow */}
       <div className="absolute inset-0 bg-gradient-to-br from-background/80 via-background/60 to-background/40 backdrop-blur-sm rounded-lg shadow-2xl" />
       
