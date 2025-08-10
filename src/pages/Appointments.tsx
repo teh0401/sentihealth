@@ -247,7 +247,7 @@ const Appointments = () => {
         <div className="space-y-3 sm:space-y-4">
           <div className="flex items-start justify-between gap-4">
             <div>
-              <h1 className="text-2xl sm:text-3xl font-bold text-foreground">Book Medical Appointments</h1>
+              <h1 className="text-2xl sm:text-3xl font-bold text-foreground">Medical Appointments</h1>
               <p className="text-sm sm:text-base text-muted-foreground mt-1 sm:mt-2">
                 Schedule appointments with healthcare providers across our network of government medical facilities.
               </p>
