@@ -95,6 +95,15 @@ export class WebhookService {
       const result = await response.json();
       console.log('Webhook voice response:', result);
       
+      // Play audio response if available
+      if (result.audio_response) {
+        try {
+          await WebhookService.playAudioResponse(result.audio_response);
+        } catch (error) {
+          console.error('Error playing audio response:', error);
+        }
+      }
+      
       return result;
     } catch (error) {
       console.error('Error sending voice message to webhook:', error);
