@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Mic, MicOff, X, Volume2, VolumeX } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
-import VoiceAvatar from "./VoiceAvatar";
+import AIAssistantAvatar from "../avatar/AIAssistantAvatar";
 import { cn } from "@/lib/utils";
 import { WebhookService } from "@/services/webhookService";
 import { AudioRecorder, getCurrentUserId } from "@/services/audioRecorder";
@@ -45,6 +45,7 @@ const EnhancedVoiceAgent: React.FC<EnhancedVoiceAgentProps> = ({
   const [isExpanded, setIsExpanded] = useState(false);
   const [isMuted, setIsMuted] = useState(false);
   const [avatarState, setAvatarState] = useState<'idle' | 'listening' | 'speaking' | 'pointing' | 'celebrating'>('idle');
+  const [speechText, setSpeechText] = useState('');
   
   const recognitionRef = useRef<any>(null);
   const mediaRef = useRef<MediaStream | null>(null);
@@ -200,6 +201,7 @@ const EnhancedVoiceAgent: React.FC<EnhancedVoiceAgentProps> = ({
   const speakWithAnim = (text: string) => {
     if (isMuted) return;
     
+    setSpeechText(text); // Set text for lip sync
     speak(text, {
       onStart: () => { 
         setSpeaking(true); 
@@ -210,6 +212,7 @@ const EnhancedVoiceAgent: React.FC<EnhancedVoiceAgentProps> = ({
         setSpeaking(false); 
         setAvatarState('idle');
         setVolume(0);
+        setSpeechText(''); // Clear text when done
       },
     });
   };
@@ -303,7 +306,16 @@ const EnhancedVoiceAgent: React.FC<EnhancedVoiceAgentProps> = ({
             className="relative w-16 h-16 rounded-full shadow-lg overflow-hidden"
             aria-label="Start voice assistant"
           >
-            <VoiceAvatar state="idle" size="small" />
+            <div className="w-full h-full rounded-full overflow-hidden">
+              <AIAssistantAvatar 
+                avatarUrl="https://models.readyplayer.me/6896e289f1074e9697938176.glb"
+                isListening={false}
+                isSpeaking={false}
+                speechText=""
+                volume={0}
+                className="w-full h-full scale-150"
+              />
+            </div>
           </Button>
 
           {/* Pulse indicator */}
@@ -338,13 +350,18 @@ const EnhancedVoiceAgent: React.FC<EnhancedVoiceAgentProps> = ({
           {/* Header */}
           <div className="flex items-center justify-between mb-4">
             <div className="flex items-center gap-2">
-              <VoiceAvatar 
-                state={avatarState} 
-                size="medium" 
-                volume={volume}
-              />
+              <div className="w-16 h-16 rounded-lg overflow-hidden">
+                <AIAssistantAvatar 
+                  avatarUrl="https://models.readyplayer.me/6896e289f1074e9697938176.glb"
+                  isListening={avatarState === 'listening'}
+                  isSpeaking={avatarState === 'speaking'}
+                  speechText={speechText}
+                  volume={volume}
+                  className="w-full h-full"
+                />
+              </div>
               <div>
-                <h3 className="font-semibold text-sm">Voice Assistant</h3>
+                <h3 className="font-semibold text-sm">AI Assistant</h3>
                 <p className="text-xs text-muted-foreground">
                   {speaking ? 'Speaking...' : listening ? 'Listening...' : 'Ready to help'}
                 </p>
