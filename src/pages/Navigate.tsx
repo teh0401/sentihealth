@@ -3,9 +3,9 @@ import { MapPin } from "lucide-react";
 
 const Navigate = () => {
   return (
-    <div className="h-screen w-screen overflow-hidden bg-black">
+    <div className="fixed inset-0 overflow-hidden bg-black">
       {/* Header overlay */}
-      <div className="absolute top-0 left-0 right-0 z-40 bg-primary text-primary-foreground">
+      <div className="absolute top-0 left-0 right-0 z-50 bg-primary text-primary-foreground">
         <div className="px-3 sm:px-4 py-1.5 sm:py-2">
           <div className="flex items-center gap-1 sm:gap-2 text-xs sm:text-sm">
             <MapPin className="h-3 w-3 sm:h-4 sm:w-4" />
@@ -18,9 +18,9 @@ const Navigate = () => {
         </div>
       </div>
       
-      {/* Camera view - fullscreen with header offset */}
-      <div className="pt-10 h-full">
-        <CameraView className="h-full" />
+      {/* Camera view - fullscreen */}
+      <div className="absolute inset-0 top-10">
+        <CameraView className="w-full h-full" />
       </div>
     </div>
   );

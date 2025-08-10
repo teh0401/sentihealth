@@ -139,14 +139,14 @@ const CameraView: React.FC<CameraViewProps> = ({ className = '' }) => {
         )}
       </AnimatePresence>
 
-      {/* Camera controls overlay */}
+      {/* Camera controls overlay - Fixed at bottom */}
       {isCameraOn && !error && (
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="absolute bottom-4 left-1/2 transform -translate-x-1/2"
+          className="absolute bottom-6 left-1/2 transform -translate-x-1/2 z-50"
         >
-          <div className="flex items-center gap-4 bg-black/60 backdrop-blur-sm rounded-full px-6 py-3">
+          <div className="flex items-center gap-4 bg-black/80 backdrop-blur-sm rounded-full px-6 py-4 shadow-2xl">
             {/* Camera type indicator */}
             <div className="text-white text-sm font-medium">
               {facingMode === 'user' ? 'Front Camera' : 'Rear Camera'}
@@ -157,10 +157,10 @@ const CameraView: React.FC<CameraViewProps> = ({ className = '' }) => {
               onClick={switchCamera}
               size="icon"
               variant="ghost"
-              className="bg-white/20 hover:bg-white/30 text-white border-white/20 rounded-full h-12 w-12"
+              className="bg-white/30 hover:bg-white/40 text-white border-white/30 rounded-full h-14 w-14 shadow-lg"
               disabled={isLoading}
             >
-              <RotateCw className="h-5 w-5" />
+              <RotateCw className="h-6 w-6" />
             </Button>
           </div>
         </motion.div>
