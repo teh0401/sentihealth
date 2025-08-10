@@ -71,8 +71,9 @@ export class WebhookService {
   ): Promise<WebhookResponse> {
     try {
       const payload = {
-        user_id: userId,
-        message: transcript
+        user_id: userId || "9abc",
+        message: transcript,
+        type: "voice"
       };
 
       console.log('Sending voice message to webhook:', payload);
