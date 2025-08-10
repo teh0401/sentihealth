@@ -119,16 +119,36 @@ function ReadyPlayerMeAvatar({ avatarUrl, isListening, isSpeaking, volume, onLoa
   const groupRef = useRef<Group>(null);
   const mixerRef = useRef<AnimationMixer | null>(null);
   const [isLoaded, setIsLoaded] = useState(false);
+  const [loadingTimeout, setLoadingTimeout] = useState<NodeJS.Timeout | null>(null);
   const [blinkTime, setBlinkTime] = useState(0);
 
-  // Load the GLTF model
-  const { scene } = useGLTF(avatarUrl);
+  // Load the GLTF model with error handling
+  let scene;
+  try {
+    const gltfResult = useGLTF(avatarUrl);
+    scene = gltfResult.scene;
+  } catch (error) {
+    console.error('Error loading GLTF model:', error);
+    onLoadError();
+    return null;
+  }
 
   useEffect(() => {
-    if (!scene) return;
+    // Set a timeout to fallback if loading takes too long
+    const timeout = setTimeout(() => {
+      console.warn('Avatar loading timeout, switching to fallback');
+      onLoadError();
+    }, 5000);
+    setLoadingTimeout(timeout);
+
+    if (!scene) {
+      onLoadError();
+      return;
+    }
 
     const setupAvatar = async () => {
       try {
+        console.log('Setting up Ready Player Me avatar:', avatarUrl);
         const clonedScene = scene.clone();
         
         if (groupRef.current) {
@@ -142,7 +162,9 @@ function ReadyPlayerMeAvatar({ avatarUrl, isListening, isSpeaking, volume, onLoa
           mixerRef.current = new AnimationMixer(clonedScene);
         }
         
+        console.log('Avatar setup successful');
         setIsLoaded(true);
+        if (loadingTimeout) clearTimeout(loadingTimeout);
       } catch (error) {
         console.error('Error setting up avatar:', error);
         onLoadError();
@@ -150,7 +172,11 @@ function ReadyPlayerMeAvatar({ avatarUrl, isListening, isSpeaking, volume, onLoa
     };
 
     setupAvatar();
-  }, [scene, onLoadError]);
+
+    return () => {
+      if (loadingTimeout) clearTimeout(loadingTimeout);
+    };
+  }, [scene, onLoadError, avatarUrl]);
 
   // Animation logic
   useFrame((state) => {
