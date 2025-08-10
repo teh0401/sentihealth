@@ -1,6 +1,6 @@
 // Webhook service for healthcare AI assistant
 const WEBHOOK_TEXT_URL = "https://kaisan.app.n8n.cloud/webhook/healthcare-message";
-const WEBHOOK_VOICE_URL = "https://kaisan.app.n8n.cloud/webhook/healthcare-voice";
+const WEBHOOK_VOICE_URL = "https://kaisan.app.n8n.cloud/webhook/healthcare-message";
 
 interface TextMessage {
   message: string;
@@ -70,38 +70,21 @@ export class WebhookService {
     userId?: string
   ): Promise<WebhookResponse> {
     try {
-      // Create FormData for file upload
-      const formData = new FormData();
-      
-      if (audioFile) {
-        formData.append('audio_file', audioFile, 'recording.webm');
-      }
-      
-      if (audioData) {
-        formData.append('audio_data', audioData);
-      }
-      
-      if (transcript) {
-        formData.append('transcript', transcript);
-      }
-      
-      if (userId) {
-        formData.append('user_id', userId);
-      }
-      
-      formData.append('timestamp', new Date().toISOString());
+      const payload = {
+        user_id: userId,
+        message: transcript
+      };
 
-      console.log('Sending voice message to webhook:', { 
-        hasAudioFile: !!audioFile,
-        hasAudio: !!audioData, 
-        transcript,
-        userId,
-        timestamp: new Date().toISOString()
-      });
+      console.log('Sending voice message to webhook:', payload);
       
       const response = await fetch(WEBHOOK_VOICE_URL, {
         method: 'POST',
-        body: formData
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+        },
+        mode: 'cors',
+        body: JSON.stringify(payload)
       });
 
       if (!response.ok) {
