@@ -248,7 +248,7 @@ const AIAssistantAvatar: React.FC<AIAssistantAvatarProps> = ({
       
       {/* 3D Canvas */}
       <div className="relative w-full h-full rounded-lg overflow-hidden" id="avatar-canvas">
-        <div class="Izwocg" style="width: 200px; height: 150px; transform: translate(0px, 0px) rotate(0deg);"><img class="_7_i_XA" crossorigin="anonymous" draggable="false" alt="Illustration of a Smiling Female Nurse" src="https://media-public.canva.com/abu_Y/MAF-OWabu_Y/1/tl.png"/></div>
+        <img class="_7_i_XA" style="width: 200px; height: 150px; transform: translate(0px, 0px) rotate(0deg);" crossorigin="anonymous" draggable="false" alt="Illustration of a Smiling Female Nurse" src="https://media-public.canva.com/abu_Y/MAF-OWabu_Y/1/tl.png"/>
       </div>
 
       {/* Lip Sync Component */}
