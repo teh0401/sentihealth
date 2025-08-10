@@ -114,6 +114,8 @@ const StandardVoiceButton: React.FC<StandardVoiceButtonProps> = ({
         console.log('Triggering navigation callback...');
         onNavigationTrigger?.(destination || 'your destination');
         setAvatarState('guiding');
+        // Close the dialog after navigation is triggered
+        setIsExpanded(false);
       }, 1000);
       return;
     }
