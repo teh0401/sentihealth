@@ -68,10 +68,8 @@ const StandardVoiceButton: React.FC<StandardVoiceButtonProps> = ({
       // Get current user ID
       const userId = await getCurrentUserId();
       
-      // Send both audio file and transcript to webhook
-      const response = await WebhookService.sendVoiceMessage(
-        audioFile,
-        undefined, // no base64 audio data needed since we have file
+      // Send transcript to text webhook since we already have the text
+      const response = await WebhookService.sendTextMessage(
         text,
         userId || undefined
       );
