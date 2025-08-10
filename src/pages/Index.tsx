@@ -52,8 +52,8 @@ const Index = () => {
             <div className="space-y-3">
               <h1 className="text-2xl sm:text-4xl lg:text-5xl font-bold text-gray-800 leading-tight px-2">
                 {getText(
-                  "Selamat Datang ke Hospital Malaysia",
-                  "Welcome to Malaysian Hospital"
+                  "Sistem Pengurusan Pesakit",
+                  "Patient Management System"
                 )}
               </h1>
               <p className="text-base sm:text-lg text-gray-600 max-w-2xl mx-auto leading-relaxed px-4">
