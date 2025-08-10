@@ -64,32 +64,32 @@ const StandardVoiceButton: React.FC<StandardVoiceButtonProps> = ({
   const handleUnderstanding = useCallback(async (text: string, audioFile?: Blob) => {
     console.log('Voice input received:', text);
     
-    // Check for navigation commands locally first
+    // Check for navigation commands locally first - be more specific
     const lowerText = text.toLowerCase().trim();
     console.log('Checking for navigation in:', lowerText);
     
-    // Enhanced pattern matching to handle speech recognition errors
-    const navigationPatterns = [
-      'navigate me to',
-      'navigate to', 
-      'take me to',
-      'navigate me',
-      'navigate to',
-      'take me',
-      // Common speech recognition errors
-      'we get me to',
-      'get me to',
-      'navigate me two', // "to" -> "two"
-      'navigate me too', // "to" -> "too"
-      'navi get me to',  // "navigate" -> "navi get"
-      'navigate meet to', // mishearing
-      'we navigate to',   // mishearing
-      'can you navigate me to',
-      'navigate', // just "navigate" alone
-    ];
-    
-    const isNavigationCommand = navigationPatterns.some(pattern => 
-      lowerText.includes(pattern) || lowerText.startsWith(pattern)
+    // More specific navigation patterns - must contain clear navigation intent
+    const isNavigationCommand = (
+      lowerText.includes('navigate me to ') ||
+      lowerText.includes('navigate to ') ||
+      lowerText.includes('take me to ') ||
+      (lowerText.startsWith('navigate me ') && lowerText.includes(' to ')) ||
+      (lowerText.startsWith('navigate ') && lowerText.includes(' to ')) ||
+      (lowerText.startsWith('take me ') && lowerText.includes(' to ')) ||
+      // Handle speech recognition errors but keep specificity
+      (lowerText.includes('we get me to ') && lowerText.length > 12) ||
+      (lowerText.includes('get me to ') && lowerText.length > 10) ||
+      // Must have destination mentioned
+      (lowerText.includes('navigate') && (
+        lowerText.includes(' room ') || 
+        lowerText.includes(' ward ') || 
+        lowerText.includes(' department ') ||
+        lowerText.includes(' floor ') ||
+        lowerText.includes(' building ') ||
+        lowerText.includes(' hospital ') ||
+        lowerText.includes(' clinic ') ||
+        lowerText.includes(' office ')
+      ))
     );
     
     if (isNavigationCommand) {
