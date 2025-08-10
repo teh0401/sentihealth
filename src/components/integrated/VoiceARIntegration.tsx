@@ -16,9 +16,9 @@ const VoiceARIntegration: React.FC<VoiceARIntegrationProps> = ({ className }) =>
     setDestination(dest);
     setShowHandoffEffect(true);
     
-    // Navigate to AR page after animation
+    // Navigate to AR page after animation with parameters
     setTimeout(() => {
-      navigate('/navigate');
+      navigate(`/navigate?fromVoice=true&destination=${encodeURIComponent(dest)}`);
       setShowHandoffEffect(false);
     }, 2500);
   }, [navigate]);
