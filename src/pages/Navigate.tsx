@@ -158,7 +158,7 @@ const Navigate = () => {
             />
             
             {/* Floor plan controls */}
-            <div className="absolute top-3 right-1 flex gap-1">
+            <div className="absolute top-4 right-1 flex gap-1">
               <Button
                 variant="outline"
                 size="icon"
