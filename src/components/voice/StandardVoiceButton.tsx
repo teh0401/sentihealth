@@ -43,8 +43,7 @@ interface StandardVoiceButtonProps {
 }
 
 const StandardVoiceButton: React.FC<StandardVoiceButtonProps> = ({ 
-  onNavigationTrigger,
-  variant = 'realistic'
+  onNavigationTrigger
 }) => {
   const [isListening, setIsListening] = useState(false);
   const [isSpeaking, setIsSpeaking] = useState(false);
@@ -66,52 +65,45 @@ const StandardVoiceButton: React.FC<StandardVoiceButtonProps> = ({
   const handleUnderstanding = useCallback(async (text: string, audioFile?: Blob) => {
     console.log('Voice input received:', text);
     
-    // Check for navigation commands locally first - be more specific
     const lowerText = text.toLowerCase().trim();
-    console.log('Checking for navigation in:', lowerText);
     
-    // More specific navigation patterns - must contain clear navigation intent
-    const isNavigationCommand = (
-      lowerText.includes('navigate me to ') ||
-      lowerText.includes('navigate to ') ||
-      lowerText.includes('take me to ') ||
-      (lowerText.startsWith('navigate me ') && lowerText.includes(' to ')) ||
-      (lowerText.startsWith('navigate ') && lowerText.includes(' to ')) ||
-      (lowerText.startsWith('take me ') && lowerText.includes(' to ')) ||
-      // Handle speech recognition errors but keep specificity
-      (lowerText.includes('we get me to ') && lowerText.length > 12) ||
-      (lowerText.includes('get me to ') && lowerText.length > 10) ||
-      // Must have destination mentioned
-      (lowerText.includes('navigate') && (
-        lowerText.includes(' room ') || 
-        lowerText.includes(' ward ') || 
-        lowerText.includes(' department ') ||
-        lowerText.includes(' floor ') ||
-        lowerText.includes(' building ') ||
-        lowerText.includes(' hospital ') ||
-        lowerText.includes(' clinic ') ||
-        lowerText.includes(' office ')
-      ))
-    );
-    
-    if (isNavigationCommand) {
-      console.log('🗺️ Navigation command detected locally:', text);
-      setAvatarState('pointing');
-      
-      // Extract destination - try multiple patterns
-      let destination = '';
-      if (lowerText.includes('navigate me to ')) {
-        destination = text.substring(text.toLowerCase().indexOf('navigate me to ') + 15).trim();
-      } else if (lowerText.includes('navigate to ')) {
-        destination = text.substring(text.toLowerCase().indexOf('navigate to ') + 12).trim();
-      } else if (lowerText.includes('take me to ')) {
-        destination = text.substring(text.toLowerCase().indexOf('take me to ') + 11).trim();
-      } else {
-        destination = 'your destination';
+    // Enhanced navigation detection patterns
+    const navigationPatterns = [
+      /(?:navigate|direct|guide|take|show)\s+(?:me\s+)?(?:to|the\s+way\s+to)\s+(.+)/i,
+      /(?:where\s+is|find|locate)\s+(?:the\s+)?(.+?)(?:\s+(?:room|ward|department|office|clinic))?$/i,
+      /(?:go\s+to|head\s+to|walk\s+to)\s+(.+)/i,
+      /(?:directions?\s+to|route\s+to|path\s+to)\s+(.+)/i,
+      /(?:how\s+do\s+i\s+get\s+to)\s+(.+)/i
+    ];
+
+    let isNavigationCommand = false;
+    let destination = '';
+
+    // Check each pattern
+    for (const pattern of navigationPatterns) {
+      const match = lowerText.match(pattern);
+      if (match && match[1]) {
+        destination = match[1].trim();
+        
+        // Additional validation: must contain location-related keywords
+        const locationKeywords = ['room', 'ward', 'department', 'office', 'clinic', 'pharmacy', 'lab', 'radiology', 'emergency', 'reception', 'toilet', 'cafeteria', 'exit', 'entrance', 'floor', 'wing'];
+        const hasLocationKeyword = locationKeywords.some(keyword => 
+          destination.includes(keyword) || lowerText.includes(keyword)
+        );
+        
+        // Or contains numbers (likely room numbers)
+        const hasNumbers = /\d/.test(destination);
+        
+        if (hasLocationKeyword || hasNumbers || destination.length > 2) {
+          isNavigationCommand = true;
+          break;
+        }
       }
-      
-      console.log('Extracted destination:', destination);
-      await speakWithAnim(`Starting navigation${destination ? ` to ${destination}` : ''}. Opening camera view now.`);
+    }
+    
+    if (isNavigationCommand && destination) {
+      console.log('Navigation command detected with destination:', destination);
+      await speakWithAnim(`Starting navigation to ${destination}. Opening camera view now.`);
       
       // Close the dialog immediately
       setIsExpanded(false);
@@ -119,15 +111,15 @@ const StandardVoiceButton: React.FC<StandardVoiceButtonProps> = ({
       setTimeout(() => {
         console.log('Navigating to /navigate page with destination:', destination);
         // Navigate directly to the /navigate page with parameters
-        navigate(`/navigate?fromVoice=true&destination=${encodeURIComponent(destination || 'your destination')}`);
+        navigate(`/navigate?fromVoice=true&destination=${encodeURIComponent(destination)}`);
         setAvatarState('guiding');
         
         // Also call the callback if provided
-        onNavigationTrigger?.(destination || 'your destination');
+        onNavigationTrigger?.(destination);
       }, 1000);
       return;
     }
-    
+
     try {
       // Get current user ID
       const userId = await getCurrentUserId();
