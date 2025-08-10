@@ -470,7 +470,7 @@ const StandardVoiceButton: React.FC<StandardVoiceButtonProps> = ({
 
       {/* Floating button with doctor icon */}
       <motion.button
-        className="fixed bottom-4 right-4 sm:bottom-4 sm:right-4 w-14 h-14 bg-gradient-to-br from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white rounded-full shadow-lg z-40 flex items-center justify-center hidden sm:flex"
+        className="fixed bottom-24 right-4 sm:bottom-4 sm:right-4 w-12 h-12 sm:w-14 sm:h-14 bg-gradient-to-br from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white rounded-full shadow-lg z-40 flex items-center justify-center"
         onClick={() => setIsExpanded(!isExpanded)}
         animate={{
           scale: isListening ? [1, 1.1, 1] : 1,

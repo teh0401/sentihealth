@@ -88,44 +88,41 @@ const Navigate = () => {
 
   return (
     <div className="fixed inset-0 overflow-hidden bg-black">
-      {/* Header overlay - reduced height */}
+      {/* Header overlay - mobile optimized */}
       <div className="absolute top-0 left-0 right-0 z-40 bg-primary text-primary-foreground">
-        <div className="px-3 sm:px-4 py-1">
-          <div className="flex items-center gap-1 sm:gap-2 text-xs">
-            <MapPin className="h-3 w-3" />
-            <span className="font-medium">
-              <span className="hidden sm:inline">Facility Navigation Camera</span>
-              <span className="sm:hidden">Navigation Camera</span>
-            </span>
-            <span className="ml-auto text-xs opacity-80 hidden sm:inline">Government Health Portal</span>
+        <div className="px-4 py-2">
+          <div className="flex items-center gap-2 text-sm">
+            <MapPin className="h-4 w-4" />
+            <span className="font-medium">Navigation Camera</span>
+            <span className="ml-auto text-xs opacity-80 hidden sm:inline">Gov Health Portal</span>
           </div>
         </div>
       </div>
       
-      {/* Camera view - fullscreen */}
-      <div className="absolute inset-0 top-6">
+      {/* Camera view - fullscreen with mobile padding */}
+      <div className="absolute inset-0 top-12">
         <CameraView className="w-full h-full" />
       </div>
 
-      {/* Direction Arrow Overlay - Large center display */}
+      {/* Direction Arrow Overlay - Mobile optimized center display */}
       {navigationStarted && currentStep < navigationSteps.length && (
         <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-50">
-          <div className="text-8xl sm:text-9xl text-blue-400 drop-shadow-2xl animate-pulse">
+          <div className="text-6xl sm:text-8xl md:text-9xl text-blue-400 drop-shadow-2xl animate-pulse">
             {navigationSteps[currentStep].arrow}
           </div>
         </div>
       )}
 
-      {/* Navigation Instructions Overlay - Bottom center */}
+      {/* Navigation Instructions Overlay - Mobile optimized bottom center */}
       {navigationStarted && currentStep < navigationSteps.length && (
-        <div className="absolute bottom-24 left-1/2 transform -translate-x-1/2 z-50 bg-black/90 backdrop-blur-md text-white px-6 py-4 rounded-2xl shadow-2xl border border-white/20 max-w-sm mx-4">
+        <div className="absolute bottom-20 sm:bottom-24 left-1/2 transform -translate-x-1/2 z-50 bg-black/90 backdrop-blur-md text-white px-4 sm:px-6 py-3 sm:py-4 rounded-xl sm:rounded-2xl shadow-2xl border border-white/20 max-w-xs sm:max-w-sm mx-3 sm:mx-4">
           <div className="text-center">
-            <div className="text-sm font-bold mb-1">Step {currentStep + 1} of {navigationSteps.length}</div>
-            <div className="text-lg font-semibold text-blue-300 mb-2">
+            <div className="text-xs sm:text-sm font-bold mb-1">Step {currentStep + 1} of {navigationSteps.length}</div>
+            <div className="text-base sm:text-lg font-semibold text-blue-300 mb-2">
               {navigationSteps[currentStep].instruction}
             </div>
             {currentStep < navigationSteps.length - 1 && (
-              <div className="text-xs text-gray-300 mb-3">
+              <div className="text-xs text-gray-300 mb-2 sm:mb-3">
                 Next: {Math.ceil(navigationSteps[currentStep].duration / 1000)}s
               </div>
             )}
@@ -135,7 +132,7 @@ const Navigate = () => {
               {navigationSteps.slice(0, -1).map((_, index) => (
                 <div
                   key={index}
-                  className={`w-2 h-2 rounded-full transition-colors ${
+                  className={`w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-full transition-colors ${
                     index <= currentStep ? 'bg-blue-400' : 'bg-gray-600'
                   }`}
                 />
@@ -145,10 +142,10 @@ const Navigate = () => {
         </div>
       )}
 
-      {/* Floor plan overlay - top right corner, below header */}
+      {/* Floor plan overlay - mobile optimized positioning */}
       {showFloorPlan && (
-        <div className={`absolute top-8 right-2 z-45 bg-white/95 backdrop-blur border rounded-lg shadow-lg transition-all duration-300 ${
-          isFloorPlanExpanded ? 'w-80 h-64' : 'w-48 h-36'
+        <div className={`absolute top-16 right-3 z-45 bg-white/95 backdrop-blur border rounded-lg shadow-lg transition-all duration-300 ${
+          isFloorPlanExpanded ? 'w-72 h-52 sm:w-80 sm:h-64' : 'w-40 h-28 sm:w-48 sm:h-36'
         }`}>
           <div className="relative w-full h-full p-2">
             <img 
@@ -158,7 +155,7 @@ const Navigate = () => {
             />
             
             {/* Floor plan controls */}
-            <div className="absolute top-1 right-1 flex gap-1">
+            <div className="absolute top-4 right-1 flex gap-1">
               <Button
                 variant="outline"
                 size="icon"
