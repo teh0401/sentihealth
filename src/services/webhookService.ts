@@ -71,7 +71,7 @@ export class WebhookService {
   ): Promise<WebhookResponse> {
     try {
       const payload = {
-        user_id: userId || "9abc",
+        user_id: userId,
         message: transcript,
         type: "voice"
       };
