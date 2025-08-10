@@ -64,6 +64,20 @@ const Enhanced3DVoiceAgent: React.FC<Enhanced3DVoiceAgentProps> = ({
   const handleUnderstanding = useCallback(async (text: string, audioFile?: Blob) => {
     console.log('3D Voice input received:', text);
     
+    // Check for navigation commands locally first
+    const lowerText = text.toLowerCase();
+    if (lowerText.includes('navigate me to') || lowerText.includes('navigate to') || lowerText.includes('take me to')) {
+      console.log('🗺️ Navigation command detected locally:', text);
+      setAvatarState('pointing');
+      const destination = text.replace(/navigate me to|navigate to|take me to/i, '').trim();
+      await speakWithAnim(`Starting navigation${destination ? ` to ${destination}` : ''}. Opening camera view now.`);
+      setTimeout(() => {
+        onNavigationTrigger?.(destination || 'your destination');
+        setAvatarState('guiding');
+      }, 1000);
+      return;
+    }
+    
     try {
       // Get current user ID
       const userId = await getCurrentUserId();
