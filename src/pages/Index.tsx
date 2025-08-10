@@ -4,10 +4,10 @@ import { Link } from "react-router-dom";
 import { Calendar, MapPin, HeartHandshake, UserPlus, Info, MessageCircle, X, ShieldCheck, ArrowRight } from "lucide-react";
 import { useState, useEffect } from "react";
 import { useLanguage } from "@/context/LanguageContext";
+import StandardVoiceButton from "@/components/voice/StandardVoiceButton";
 
 const Index = () => {
   const { getText } = useLanguage();
-  const [showAssistant, setShowAssistant] = useState(false);
   const [isSignedIn, setIsSignedIn] = useState(false);
 
   useEffect(() => {
@@ -197,58 +197,8 @@ const Index = () => {
         </div>
       </section>
 
-      {/* Floating Assistant Button - Hidden on mobile to avoid footer conflict */}
-      <div className="fixed bottom-4 right-4 z-50 hidden sm:block">
-        <Button
-          onClick={() => setShowAssistant(true)}
-          className="w-14 h-14 sm:w-16 sm:h-16 rounded-full bg-gradient-to-br from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 shadow-lg hover:shadow-xl transition-all duration-200 active:scale-95 touch-manipulation"
-        >
-          <div className="text-xl sm:text-2xl">👨‍⚕️</div>
-        </Button>
-      </div>
-
-      {/* Assistant Modal */}
-      {showAssistant && (
-        <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-3">
-          <div className="bg-white rounded-xl p-4 sm:p-6 max-w-sm w-full shadow-xl mx-3">
-            <div className="flex justify-between items-center mb-3">
-              <h3 className="text-lg sm:text-xl font-bold text-gray-800">
-                {getText("Pembantu", "Assistant")}
-              </h3>
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => setShowAssistant(false)}
-                className="h-8 w-8 p-0 touch-manipulation"
-              >
-                <X className="h-4 w-4" />
-              </Button>
-            </div>
-            <div className="space-y-3">
-              <div className="flex items-start gap-3">
-                <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center flex-shrink-0">
-                  <div className="text-lg">👨‍⚕️</div>
-                </div>
-                <div className="flex-1">
-                  <p className="text-sm sm:text-base text-gray-700 leading-relaxed">
-                    {getText(
-                      "Saya boleh membantu dengan pendaftaran. Bagaimana saya boleh bantu?",
-                      "I can help with registration. How can I assist you?"
-                    )}
-                  </p>
-                </div>
-              </div>
-              <Button 
-                className="w-full gap-2 h-10 touch-manipulation" 
-                onClick={() => setShowAssistant(false)}
-              >
-                <MessageCircle className="h-4 w-4" />
-                {getText("Mulakan", "Start Chat")}
-              </Button>
-            </div>
-          </div>
-        </div>
-      )}
+      {/* Standard Voice Button */}
+      <StandardVoiceButton />
     </main>
   );
 };

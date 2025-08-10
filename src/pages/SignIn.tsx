@@ -24,6 +24,7 @@ import {
   Mail
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
+import StandardVoiceButton from "@/components/voice/StandardVoiceButton";
 
 interface UserProfile {
   id: string;
@@ -434,6 +435,9 @@ const SignIn = () => {
           </Card>
         )}
       </div>
+      
+      {/* Standard Voice Button */}
+      <StandardVoiceButton />
     </div>
   );
 };

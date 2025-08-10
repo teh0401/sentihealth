@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { HeartPulse, CheckCircle, Trophy, Clock, Calendar, Footprints, Droplets, Pill } from "lucide-react";
 import AIRecoveryRecommendations from "@/components/recovery/AIRecoveryRecommendations";
+import StandardVoiceButton from "@/components/voice/StandardVoiceButton";
 
 interface Task { id: string; title: string; done: boolean; type: 'medication' | 'exercise' | 'wellness' | 'hydration'; }
 
@@ -237,6 +238,9 @@ const Recovery = () => {
           </p>
         </CardContent>
       </Card>
+      
+      {/* Standard Voice Button */}
+      <StandardVoiceButton />
     </main>
   );
 };

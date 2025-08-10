@@ -5,6 +5,7 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { MapPin, Camera, Navigation } from "lucide-react";
+import StandardVoiceButton from "@/components/voice/StandardVoiceButton";
 
 const Navigate = () => {
   const [showTest, setShowTest] = useState(false);
@@ -74,6 +75,9 @@ const Navigate = () => {
               <AR3DNavigator autoStart={true} fullscreen={true} />
             )}
           </div>
+          
+          {/* Standard Voice Button - Only show when not in test mode */}
+          <StandardVoiceButton />
         </>
       )}
     </div>

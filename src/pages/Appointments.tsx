@@ -11,6 +11,7 @@ import { useGeolocation } from "@/hooks/use-geolocation";
 import { sortByDistance, formatDistance } from "@/lib/distance";
 import { MapPin, Navigation, Loader2, Brain, FileText, User, Stethoscope, Calendar, AlertCircle, ClipboardList } from "lucide-react";
 import AppointmentList from "@/components/appointments/AppointmentList";
+import StandardVoiceButton from "@/components/voice/StandardVoiceButton";
 
 interface Clinic {
   id: string;
@@ -577,6 +578,9 @@ const Appointments = () => {
           </div>
         </div>
       )}
+      
+      {/* Standard Voice Button */}
+      <StandardVoiceButton />
     </main>
   );
 };
