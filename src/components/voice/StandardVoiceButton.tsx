@@ -68,12 +68,31 @@ const StandardVoiceButton: React.FC<StandardVoiceButtonProps> = ({
     const lowerText = text.toLowerCase().trim();
     console.log('Checking for navigation in:', lowerText);
     
-    if (lowerText.includes('navigate me to') || 
-        lowerText.includes('navigate to') || 
-        lowerText.includes('take me to') ||
-        lowerText.startsWith('navigate me') ||
-        lowerText.startsWith('navigate to') ||
-        lowerText.startsWith('take me')) {
+    // Enhanced pattern matching to handle speech recognition errors
+    const navigationPatterns = [
+      'navigate me to',
+      'navigate to', 
+      'take me to',
+      'navigate me',
+      'navigate to',
+      'take me',
+      // Common speech recognition errors
+      'we get me to',
+      'get me to',
+      'navigate me two', // "to" -> "two"
+      'navigate me too', // "to" -> "too"
+      'navi get me to',  // "navigate" -> "navi get"
+      'navigate meet to', // mishearing
+      'we navigate to',   // mishearing
+      'can you navigate me to',
+      'navigate', // just "navigate" alone
+    ];
+    
+    const isNavigationCommand = navigationPatterns.some(pattern => 
+      lowerText.includes(pattern) || lowerText.startsWith(pattern)
+    );
+    
+    if (isNavigationCommand) {
       console.log('🗺️ Navigation command detected locally:', text);
       setAvatarState('pointing');
       
