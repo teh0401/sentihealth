@@ -247,8 +247,22 @@ const AIAssistantAvatar: React.FC<AIAssistantAvatarProps> = ({
       <div className="absolute inset-0 bg-gradient-to-br from-background/80 via-background/60 to-background/40 backdrop-blur-sm rounded-lg shadow-2xl" />
       
       {/* 3D Canvas */}
-      <div className="relative w-full h-full rounded-lg overflow-hidden" id="avatar-canvas">
-        <img class="_7_i_XA" style={{ width: "200px", height: "150px", transform: "translate(0px, 0px) rotate(0deg)" }} crossorigin="anonymous" draggable="false" alt="Illustration of a Smiling Female Nurse" src="https://media-public.canva.com/abu_Y/MAF-OWabu_Y/1/tl.png"/>
+      <div
+        className="relative w-full h-full rounded-lg overflow-hidden flex items-center justify-center"
+        id="avatar-canvas"
+      >
+        <img
+          className="_7_i_XA"
+          style={{
+            width: "200px",
+            height: "150px",
+            transform: "translate(0px, 0px) rotate(0deg)",
+          }}
+          crossOrigin="anonymous"
+          draggable={false}
+          alt="Illustration of a Smiling Female Nurse"
+          src="https://media-public.canva.com/abu_Y/MAF-OWabu_Y/1/tl.png"
+        />
       </div>
 
       {/* Lip Sync Component */}
