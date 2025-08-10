@@ -12,8 +12,18 @@ const Navigate = () => {
   const [showFloorPlan, setShowFloorPlan] = useState(false);
   const [isFloorPlanExpanded, setIsFloorPlanExpanded] = useState(false);
   const [destination, setDestination] = useState("");
+  const [navigationStarted, setNavigationStarted] = useState(false);
+  const [currentStep, setCurrentStep] = useState(0);
   const [searchParams] = useSearchParams();
   const { toast } = useToast();
+
+  // Navigation steps
+  const navigationSteps = [
+    { instruction: "Go straight", duration: 5000 },
+    { instruction: "Turn right", duration: 5000 },
+    { instruction: "Turn left", duration: 5000 },
+    { instruction: "You have arrived at your destination", duration: 0 }
+  ];
 
   useEffect(() => {
     // Check if we came from voice navigation
@@ -27,8 +37,21 @@ const Navigate = () => {
     }
   }, [searchParams]);
 
+  // Handle navigation step progression
+  useEffect(() => {
+    if (!navigationStarted || currentStep >= navigationSteps.length - 1) return;
+
+    const timer = setTimeout(() => {
+      setCurrentStep(prev => prev + 1);
+    }, navigationSteps[currentStep].duration);
+
+    return () => clearTimeout(timer);
+  }, [navigationStarted, currentStep]);
+
   const handleStartNavigation = () => {
     setShowConfirmDialog(false);
+    setNavigationStarted(true);
+    setCurrentStep(0);
     toast({
       title: "Navigation Started",
       description: `AR navigation to ${destination} is now active`,
@@ -64,6 +87,35 @@ const Navigate = () => {
       <div className="absolute inset-0 top-10">
         <CameraView className="w-full h-full" />
       </div>
+
+      {/* Navigation Instructions Overlay - Center top */}
+      {navigationStarted && currentStep < navigationSteps.length && (
+        <div className="absolute top-20 left-1/2 transform -translate-x-1/2 z-50 bg-black/80 backdrop-blur-md text-white px-6 py-4 rounded-2xl shadow-2xl border border-white/20">
+          <div className="text-center">
+            <div className="text-lg font-bold mb-1">Step {currentStep + 1}</div>
+            <div className="text-2xl font-semibold text-blue-300">
+              {navigationSteps[currentStep].instruction}
+            </div>
+            {currentStep < navigationSteps.length - 1 && (
+              <div className="mt-2 text-sm text-gray-300">
+                Next step in {Math.ceil(navigationSteps[currentStep].duration / 1000)}s
+              </div>
+            )}
+          </div>
+          
+          {/* Progress indicator */}
+          <div className="flex justify-center mt-3 gap-2">
+            {navigationSteps.slice(0, -1).map((_, index) => (
+              <div
+                key={index}
+                className={`w-2 h-2 rounded-full transition-colors ${
+                  index <= currentStep ? 'bg-blue-400' : 'bg-gray-600'
+                }`}
+              />
+            ))}
+          </div>
+        </div>
+      )}
 
       {/* Floor plan overlay - top right corner */}
       {showFloorPlan && (
