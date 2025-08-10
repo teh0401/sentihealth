@@ -92,19 +92,56 @@ export class WebhookService {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
 
-      const result = await response.json();
-      console.log('Webhook voice response:', result);
+      // Check if response is audio (MP3)
+      const contentType = response.headers.get('content-type');
+      console.log('Response content type:', contentType);
       
-      // Play audio response if available
-      if (result.audio_response) {
+      if (contentType?.includes('audio') || contentType?.includes('mpeg')) {
+        // Handle binary audio response
+        const audioBlob = await response.blob();
+        console.log('Received audio blob:', audioBlob.size, 'bytes');
+        
         try {
-          await WebhookService.playAudioResponse(result.audio_response);
+          // Play the audio directly
+          const audioUrl = URL.createObjectURL(audioBlob);
+          const audio = new Audio(audioUrl);
+          
+          await new Promise((resolve, reject) => {
+            audio.onended = () => {
+              URL.revokeObjectURL(audioUrl);
+              resolve(void 0);
+            };
+            audio.onerror = (error) => {
+              URL.revokeObjectURL(audioUrl);
+              reject(error);
+            };
+            audio.play();
+          });
         } catch (error) {
           console.error('Error playing audio response:', error);
         }
+        
+        return {
+          response: "Audio response received and played",
+          action: "audio_played",
+          data: { audioSize: audioBlob.size }
+        };
+      } else {
+        // Handle JSON response
+        const result = await response.json();
+        console.log('Webhook voice response:', result);
+        
+        // Play audio response if available in JSON
+        if (result.audio_response) {
+          try {
+            await WebhookService.playAudioResponse(result.audio_response);
+          } catch (error) {
+            console.error('Error playing audio response:', error);
+          }
+        }
+        
+        return result;
       }
-      
-      return result;
     } catch (error) {
       console.error('Error sending voice message to webhook:', error);
       // Return fallback response instead of throwing
