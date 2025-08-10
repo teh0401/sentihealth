@@ -248,47 +248,7 @@ const AIAssistantAvatar: React.FC<AIAssistantAvatarProps> = ({
       
       {/* 3D Canvas */}
       <div className="relative w-full h-full rounded-lg overflow-hidden" id="avatar-canvas">
-        <Canvas
-          camera={{ 
-            position: [0, 0, 2], 
-            fov: 50,
-            near: 0.1,
-            far: 100
-          }}
-          style={{ background: 'transparent' }}
-          gl={{ alpha: true, antialias: true }}
-        >
-          {/* Lighting setup */}
-          <ambientLight intensity={0.4} />
-          <directionalLight 
-            position={[2, 2, 5]} 
-            intensity={1.2} 
-            castShadow
-            shadow-mapSize-width={1024}
-            shadow-mapSize-height={1024}
-          />
-          <pointLight position={[-2, 2, 3]} intensity={0.6} color="#ffffff" />
-          <pointLight position={[2, -1, 3]} intensity={0.4} color="#f0f8ff" />
-          
-          {/* Avatar Model */}
-          {useFallback ? (
-            <FallbackAvatar
-              isListening={isListening}
-              isSpeaking={isSpeaking}
-              volume={volume}
-              onVisemeChange={handleVisemeChange}
-            />
-          ) : (
-            <ReadyPlayerMeAvatar
-              avatarUrl={avatarUrl}
-              isListening={isListening}
-              isSpeaking={isSpeaking}
-              volume={volume}
-              onLoadError={handleLoadError}
-              onVisemeChange={handleVisemeChange}
-            />
-          )}
-        </Canvas>
+        <img class="_7_i_XA" crossorigin="anonymous" draggable="false" alt="Illustration of a Smiling Female Nurse" src="https://media-public.canva.com/abu_Y/MAF-OWabu_Y/1/tl.png">
       </div>
 
       {/* Lip Sync Component */}
