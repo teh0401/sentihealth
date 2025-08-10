@@ -122,7 +122,7 @@ export class WebhookService {
         }
         
         return {
-          response: "Audio response received and played",
+          response: "", // Empty response to prevent text-to-speech
           action: "audio_played",
           data: { audioSize: audioBlob.size }
         };
