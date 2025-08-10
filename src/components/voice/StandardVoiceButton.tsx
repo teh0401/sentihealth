@@ -3,6 +3,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import { Mic, MicOff, Volume2, VolumeX, Minimize2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
+import { useNavigate } from "react-router-dom";
 import AIAssistantAvatar from "../avatar/AIAssistantAvatar";
 import LipSync from "../avatar/LipSync";
 import { WebhookService } from "@/services/webhookService";
@@ -54,6 +55,7 @@ const StandardVoiceButton: React.FC<StandardVoiceButtonProps> = ({
   const [currentSpeechText, setCurrentSpeechText] = useState("");
   const [avatarState, setAvatarState] = useState<'idle' | 'listening' | 'speaking' | 'pointing' | 'guiding' | 'celebrating'>('idle');
   
+  const navigate = useNavigate();
   const recognitionRef = useRef<any>(null);
   const audioContextRef = useRef<AudioContext | null>(null);
   const analyserRef = useRef<AnalyserNode | null>(null);
@@ -110,12 +112,18 @@ const StandardVoiceButton: React.FC<StandardVoiceButtonProps> = ({
       
       console.log('Extracted destination:', destination);
       await speakWithAnim(`Starting navigation${destination ? ` to ${destination}` : ''}. Opening camera view now.`);
+      
+      // Close the dialog immediately
+      setIsExpanded(false);
+      
       setTimeout(() => {
-        console.log('Triggering navigation callback...');
-        onNavigationTrigger?.(destination || 'your destination');
+        console.log('Navigating to /navigate page with destination:', destination);
+        // Navigate directly to the /navigate page with parameters
+        navigate(`/navigate?fromVoice=true&destination=${encodeURIComponent(destination || 'your destination')}`);
         setAvatarState('guiding');
-        // Close the dialog after navigation is triggered
-        setIsExpanded(false);
+        
+        // Also call the callback if provided
+        onNavigationTrigger?.(destination || 'your destination');
       }, 1000);
       return;
     }
@@ -166,7 +174,7 @@ const StandardVoiceButton: React.FC<StandardVoiceButtonProps> = ({
       setAvatarState('speaking');
       speakWithAnim("I'm having trouble connecting to the AI service. I can still help with basic navigation and appointments.");
     }
-  }, [onNavigationTrigger]);
+  }, [onNavigationTrigger, navigate]);
 
   // Initialize speech recognition
   useEffect(() => {
