@@ -135,7 +135,7 @@ const Navigate = () => {
               {navigationSteps.slice(0, -1).map((_, index) => (
                 <div
                   key={index}
-                  className={`w-2 h-2 rounded-full transition-colors ${
+                  className={`w-3 h-3 rounded-full transition-colors ${
                     index <= currentStep ? 'bg-blue-400' : 'bg-gray-600'
                   }`}
                 />
@@ -158,7 +158,7 @@ const Navigate = () => {
             />
             
             {/* Floor plan controls */}
-            <div className="absolute top-1 right-1 flex gap-1">
+            <div className="absolute top-3 right-1 flex gap-1">
               <Button
                 variant="outline"
                 size="icon"
