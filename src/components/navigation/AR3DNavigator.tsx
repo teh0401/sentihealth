@@ -340,7 +340,7 @@ const AR3DNavigator: React.FC<AR3DNavigatorProps> = ({
           clearInterval(interval);
         }
       }
-    }, 8000); // Move to next waypoint every 3 seconds
+    }, 3000); // Move to next waypoint every 3 seconds
     
     return () => clearInterval(interval);
   }, [route, destination]);
